@@ -1,10 +1,7 @@
-import { BrowserRouter } from "react-router-dom";
-import { LoginPage } from "@/components/ui/sign-in-page";
+"use client"
+
+import SlatCountPreloader from "@/components/ui/slat-count-preloader"
 
 export default function Demo() {
-  return (
-    <BrowserRouter>
-      <LoginPage />
-    </BrowserRouter>
-  );
+  return <SlatCountPreloader loop />
 }

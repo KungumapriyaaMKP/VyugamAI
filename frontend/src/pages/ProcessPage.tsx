@@ -26,32 +26,39 @@ export const ProcessPage: React.FC<ProcessPageProps> = ({ setActiveTab, onOpenAu
 
   const phases = pageData?.phases || [
     {
-      step: 'Phase 01',
-      title: 'Team Formation & Idea Submission',
-      date: 'Extended: 25th October 2026',
+      step: 'Stage 01',
+      title: 'Squad Assembly & Team Formation',
+      date: 'November – December 2026',
       status: 'Active',
-      desc: 'Form teams of 2 to 4 students, choose a problem statement, and upload your PPT proposal highlighting problem definition, proposed AI/Tech architecture, and feasibility.'
+      desc: 'Assemble squads of 4 students, verify college ID credentials, and finalize official team registration profiles.'
     },
     {
-      step: 'Phase 02',
-      title: 'Round 1 Jury Screening & Shortlisting',
-      date: 'Early November 2026',
+      step: 'Stage 02',
+      title: 'Problem Statement Selection',
+      date: 'December 2026',
       status: 'Upcoming',
-      desc: 'Blind evaluation by internal and external academic juries to select top teams per track based on originality and algorithmic rigor.'
+      desc: 'Explore curated real-world problem statements across AI, CyberSecurity, FinTech, and IoT to claim track bounties.'
     },
     {
-      step: 'Phase 03',
-      title: 'Virtual Mentorship & Prototype Build',
-      date: 'Late November 2026',
+      step: 'Stage 03',
+      title: 'Idea & Architecture Blueprint',
+      date: 'December 2026 – January 2027',
       status: 'Upcoming',
-      desc: '1-on-1 virtual mentoring clinics with industry specialists to refine system architectures, datasets, and API integrations.'
+      desc: 'Prepare the technical architecture presentation PPT, system block diagrams, and submit comprehensive engineering proposals.'
     },
     {
-      step: 'Phase 04',
-      title: 'Grand Finale (36-Hour Offline Hackathon)',
-      date: 'December 2026 / January 2027',
+      step: 'Stage 04',
+      title: 'Prototype & Code Walkthrough',
+      date: 'January – February 2027',
+      status: 'Upcoming',
+      desc: 'Build full working code models, submit GitHub repositories, and deliver video walkthrough demonstrations.'
+    },
+    {
+      step: 'Final Boss',
+      title: '24-Hour Arena – The Grand Final Live Gauntlet',
+      date: 'February – March 2027',
       status: 'Grand Finale',
-      desc: 'Top finalist teams assemble on campus at Sri Eshwar College of Engineering for live coding, continuous jury reviews, and stage demos.'
+      desc: 'Continuous physical 24-hour hackathon survival arena live on campus at Sri Eshwar College with expert juries and grand awards.'
     }
   ];
 

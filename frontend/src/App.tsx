@@ -17,10 +17,9 @@ import { AdminDashboard } from './components/admin/AdminDashboard';
 import { FAQPage } from './pages/FAQPage';
 import { ContactPage } from './pages/ContactPage';
 import { AuthModal } from './components/common/AuthModal';
-import { TargetCursor } from './components/common/TargetCursor';
+import CursorMultifollow from './components/ui/motion-cursor-multifollow';
 import { ScrollReveal } from './components/common/ScrollReveal';
 import { LoginPage } from './components/ui/sign-in-page';
-import { CountdownTimer } from './components/common/CountdownTimer';
 import { IntroVideoModal } from './components/common/IntroVideoModal';
 import { ChatBotWidget } from './components/common/ChatBotWidget';
 import { useAuth } from './context/AuthContext';
@@ -30,7 +29,7 @@ import { BookOpen, Layers, HelpCircle, Info, ArrowRight } from 'lucide-react';
 const MainAppContent: React.FC = () => {
   const { isLoading: isAuthLoading } = useAuth();
   const [activeTab, setActiveTab] = useState<string>('home');
-  const [showIntroVideo, setShowIntroVideo] = useState<boolean>(true);
+  const [showIntroVideo, setShowIntroVideo] = useState<boolean>(false);
   const [authModalState, setAuthModalState] = useState<{ isOpen: boolean; mode: 'login' | 'register' }>({
     isOpen: false,
     mode: 'login'
@@ -175,12 +174,6 @@ const MainAppContent: React.FC = () => {
           <>
             <HeroSection setActiveTab={handleTabChange} onOpenAuthModal={handleOpenAuthModal} />
 
-            {/* Live Hackathon Countdown Section */}
-            <div className="bg-slate-50 py-10 border-b border-slate-200">
-              <div className="max-w-4xl mx-auto px-4 sm:px-6">
-                <CountdownTimer />
-              </div>
-            </div>
 
             <AboutSection />
             <StatsBanner />
@@ -309,7 +302,7 @@ const MainAppContent: React.FC = () => {
         onClose={() => setShowIntroVideo(false)}
       />
 
-      <TargetCursor />
+      <CursorMultifollow global />
 
       <AnnouncementTicker />
 

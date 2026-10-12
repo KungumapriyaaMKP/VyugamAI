@@ -40,21 +40,13 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenA
       {/* Clean Single Navbar Row */}
       <div className="w-full px-4 sm:px-6 lg:px-8 py-2.5 flex items-center justify-between gap-4">
         
-        {/* Left: Brand Logo & Title */}
-        <div className="flex items-center gap-3 cursor-pointer select-none shrink-0" onClick={() => setActiveTab('home')}>
+        {/* Left: SECE Brand Logo */}
+        <div className="flex items-center cursor-pointer select-none shrink-0" onClick={() => setActiveTab('home')}>
           <img
-            src="/images/vyugam_official_logo.png?v=5"
-            alt="VyugamAI - Sri Eshwar College of Engineering"
-            className="w-11 h-11 object-cover shrink-0"
+            src="/sece_logo/generated-1 (1).png"
+            alt="Sri Eshwar College of Engineering"
+            className="h-10 sm:h-12 md:h-14 w-auto object-contain shrink-0"
           />
-          <div>
-            <div className="font-['Playfair_Display',Georgia,serif] text-xl sm:text-2xl font-black tracking-tight leading-none text-[#2e1065]">
-              VYUGAM <span className="text-slate-900">AI</span>
-            </div>
-            <div className="text-[10px] font-mono tracking-widest text-slate-500 font-bold mt-1 uppercase">
-              SRI ESHWAR COLLEGE
-            </div>
-          </div>
         </div>
 
         {/* Center: Limelight Spotlight Nav */}

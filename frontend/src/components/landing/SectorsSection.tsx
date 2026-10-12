@@ -2,6 +2,8 @@ import React from 'react';
 import { ArrowRight, Cpu, ShieldCheck, HeartPulse, Atom, Eye, Coins, Bot, Leaf, Wand2, Network } from 'lucide-react';
 import { ScrollReveal } from '../common/ScrollReveal';
 
+import { CoverflowCarousel, type CoverflowSlide } from '../ui/coverflow-carousel';
+
 interface SectorItem {
   id: string;
   trackNum: string;
@@ -105,14 +107,23 @@ const SECTORS_DATA: SectorItem[] = [
   },
 ];
 
+const SECTOR_SLIDES: CoverflowSlide[] = SECTORS_DATA.map((sector) => ({
+  src: sector.image,
+  alt: sector.name,
+  title: sector.name,
+  subtitle: `${sector.trackNum} • ${sector.category}`,
+  meta: [
+    { label: "Track", value: sector.trackNum },
+    { label: "Category", value: sector.category },
+    { label: "Focus", value: sector.focus },
+  ],
+}));
+
 interface SectorsSectionProps {
   setActiveTab: (tab: string) => void;
 }
 
 export const SectorsSection: React.FC<SectorsSectionProps> = ({ setActiveTab }) => {
-  // Duplicate sectors to create an infinite, uninterrupted marquee loop
-  const marqueeItems = [...SECTORS_DATA, ...SECTORS_DATA];
-
   return (
     <section id="sectors" className="py-20 bg-slate-50 border-b border-slate-200 relative overflow-hidden select-none scroll-mt-20">
       
@@ -120,7 +131,7 @@ export const SectorsSection: React.FC<SectorsSectionProps> = ({ setActiveTab }) 
       <div className="absolute top-0 right-0 w-96 h-96 bg-purple-100/50 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-slate-200/50 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
         <ScrollReveal direction="up" distance={20} duration={700} className="text-center max-w-3xl mx-auto space-y-3">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-none bg-purple-100/90 border border-purple-300 text-[#2e1065] text-xs font-mono font-black tracking-widest uppercase">
             <span>⚔️ 10 COMBAT DOMAINS • CHOOSE YOUR ARENA</span>
@@ -131,71 +142,36 @@ export const SectorsSection: React.FC<SectorsSectionProps> = ({ setActiveTab }) 
           </h2>
 
           <p className="text-xs sm:text-sm text-slate-600 font-sans max-w-xl mx-auto">
-            Frontier domains curating real-world challenge bounties for VyugamAI 2026. Hover over any sector to pause and inspect.
+            Frontier domains curating real-world challenge bounties for VyugamAI 2026. Swipe or use arrow keys to browse arenas.
           </p>
         </ScrollReveal>
       </div>
 
-      {/* Marquee Track with Smooth Left and Right Vignette Fade */}
-      <div className="relative w-full overflow-hidden py-3">
-        {/* Left Gradient Fade */}
-        <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-r from-slate-50 via-slate-50/80 to-transparent z-10 pointer-events-none" />
+      {/* 3D Coverflow Carousel Showcase */}
+      <div className="relative w-full max-w-6xl mx-auto px-4">
+        <CoverflowCarousel
+          slides={SECTOR_SLIDES}
+          cardWidth="clamp(220px, 24vw, 320px)"
+          rotate={44}
+          depth={0.6}
+          perspective={3}
+          falloff={0.56}
+          fade={0.15}
+          showCaption={true}
+          showNavigation={true}
+          showPagination={true}
+          cardClassName="border-2 border-purple-200/90 shadow-2xl hover:border-[#6D15C2] transition-colors"
+        />
 
-        {/* Right Gradient Fade */}
-        <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-l from-slate-50 via-slate-50/80 to-transparent z-10 pointer-events-none" />
-
-        {/* Continuous Right-to-Left Scrolling Track */}
-        <div className="animate-scroll-right-to-left flex gap-6 px-4">
-          {marqueeItems.map((sector, index) => {
-            const Icon = sector.icon;
-            return (
-              <div
-                key={`${sector.id}-${index}`}
-                onClick={() => setActiveTab('problems')}
-                className="w-72 sm:w-80 shrink-0 bg-white border border-slate-200 hover:border-[#2e1065] shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group cursor-pointer"
-              >
-                {/* Sector Visual Header */}
-                <div className="relative h-44 w-full overflow-hidden bg-slate-900">
-                  <img
-                    src={sector.image}
-                    alt={sector.name}
-                    className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500 opacity-90 group-hover:opacity-100"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/30" />
-
-                  {/* Track Badge */}
-                  <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2 py-1 bg-black/70 backdrop-blur-md border border-white/20 text-white text-[10px] font-mono font-bold tracking-wider uppercase">
-                    <Icon className="w-3 h-3 text-purple-300" />
-                    <span>{sector.trackNum}</span>
-                  </div>
-
-                  {/* Category Pill */}
-                  <div className="absolute bottom-3 left-3 px-2 py-0.5 bg-[#2e1065]/90 text-purple-200 border border-purple-400/30 text-[9px] font-mono font-bold tracking-wider uppercase">
-                    {sector.category}
-                  </div>
-                </div>
-
-                {/* Sector Card Body */}
-                <div className="p-5 flex flex-col justify-between flex-grow space-y-4">
-                  <div className="space-y-2">
-                    <h3 className="font-serif text-lg font-bold text-slate-900 group-hover:text-[#2e1065] transition-colors leading-tight">
-                      {sector.name}
-                    </h3>
-                    <p className="text-xs text-slate-600 leading-relaxed font-sans line-clamp-3">
-                      {sector.focus}
-                    </p>
-                  </div>
-
-                  {/* Explore Link */}
-                  <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-mono font-bold text-[#2e1065] group-hover:text-[#3b0764]">
-                    <span>EXPLORE TRACK</span>
-                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+        {/* CTA Button to Explore Track Problems */}
+        <div className="mt-8 flex justify-center">
+          <button
+            onClick={() => setActiveTab('problems')}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-[#6D15C2] hover:bg-[#58119e] text-white font-mono text-xs sm:text-sm font-black tracking-wider uppercase shadow-md transition-all hover:scale-105 active:scale-95 cursor-pointer rounded-none border border-purple-400/40"
+          >
+            <span>EXPLORE CHALLENGE ARENAS</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
         </div>
       </div>
 

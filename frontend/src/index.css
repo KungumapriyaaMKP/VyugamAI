@@ -1,7 +1,9 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Montserrat', sans-serif;
+  --font-serif: 'Montserrat', sans-serif;
+  --font-heading: 'Montserrat', sans-serif;
   --color-ns-muted: var(--ns-muted);
   --color-foreground: var(--foreground);
   --color-background: var(--background);
@@ -40,13 +42,17 @@
 }
 
 @layer base {
+  *, ::before, ::after {
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
   :root {
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 
   html {
     scroll-behavior: smooth;
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -57,12 +63,11 @@
     color: #0f172a;
     min-height: 100vh;
     overflow-x: hidden;
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Montserrat', sans-serif;
   }
 
-  h1, h2, h3, h4, h5, h6, .font-heading, .font-serif, .serif-heading {
-    font-family: 'Playfair Display', 'DM Serif Display', Georgia, Cambria, serif;
-    letter-spacing: -0.015em;
+  h1, h2, h3, h4, h5, h6, .font-heading, .font-serif, .serif-heading, .font-sans {
+    font-family: 'Montserrat', sans-serif;
   }
 
   code, kbd, samp, pre, .font-mono {
@@ -149,8 +154,10 @@
   animation-play-state: paused;
 }
 
-/* HUD Target Cursor: Hide standard OS cursor on desktop devices when HUD cursor is active */
+/* Hide standard OS cursor on desktop devices when custom motion cursor is active */
 @media (hover: hover) and (pointer: fine) {
+  body.custom-cursor-active,
+  body.custom-cursor-active *,
   body.hud-cursor-enabled,
   body.hud-cursor-enabled * {
     cursor: none !important;
@@ -180,28 +187,6 @@
   }
 }
 
-@keyframes textAuraPulse {
-  0%, 100% {
-    opacity: 0.35;
-    transform: scale(0.98);
-  }
-  50% {
-    opacity: 0.75;
-    transform: scale(1.04);
-  }
-}
-
-@keyframes dotSparkle {
-  0%, 100% {
-    transform: scale(1);
-    filter: drop-shadow(0 0 2px #c084fc);
-  }
-  50% {
-    transform: scale(1.35);
-    filter: drop-shadow(0 0 10px #a855f7);
-  }
-}
-
 .vyugam-shimmer-text {
   background: linear-gradient(
     115deg,
@@ -219,24 +204,9 @@
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: textShimmerSweep 5s ease-in-out infinite;
+  animation: textShimmerSweep 2.5s ease-in-out infinite;
   display: inline-block;
   will-change: background-position;
-}
-
-.vyugam-shimmer-text:hover {
-  animation-duration: 2.2s;
-}
-
-.vyugam-aura-glow {
-  animation: textAuraPulse 4.5s ease-in-out infinite;
-}
-
-.vyugam-dot-sparkle {
-  display: inline-block;
-  animation: dotSparkle 2.4s ease-in-out infinite;
-  color: #7e22ce;
-  -webkit-text-fill-color: initial;
 }
 
 /* Sectors Continuous Right-to-Left Infinite Marquee */

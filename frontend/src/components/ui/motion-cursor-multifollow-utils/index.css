@@ -1,0 +1,11 @@
+.cursor-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+[data-cursor] {
+  pointer-events: none;
+  user-select: none;
+}
+
