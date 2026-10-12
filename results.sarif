@@ -1,0 +1,2995 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "cognium-dev",
+          "version": "4.14.1",
+          "informationUri": "https://cognium.dev",
+          "rules": [
+            {
+              "id": "log_injection",
+              "name": "log_injection",
+              "shortDescription": {
+                "text": "log_injection"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "security-severity": "5.0"
+              }
+            },
+            {
+              "id": "hardcoded-credential",
+              "name": "hardcoded-credential",
+              "shortDescription": {
+                "text": "hardcoded-credential"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "security-severity": "9.0"
+              }
+            },
+            {
+              "id": "orphan-module",
+              "name": "orphan-module",
+              "shortDescription": {
+                "text": "orphan-module"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "security-severity": "3.0"
+              }
+            },
+            {
+              "id": "unused-variable",
+              "name": "unused-variable",
+              "shortDescription": {
+                "text": "unused-variable"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "security-severity": "3.0"
+              }
+            },
+            {
+              "id": "missing-stream",
+              "name": "missing-stream",
+              "shortDescription": {
+                "text": "missing-stream"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "security-severity": "3.0"
+              }
+            },
+            {
+              "id": "missing-x-frame-options",
+              "name": "missing-x-frame-options",
+              "shortDescription": {
+                "text": "missing-x-frame-options"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "security-severity": "5.0"
+              }
+            },
+            {
+              "id": "blocking-main-thread",
+              "name": "blocking-main-thread",
+              "shortDescription": {
+                "text": "blocking-main-thread"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "security-severity": "5.0"
+              }
+            },
+            {
+              "id": "weak-random",
+              "name": "weak-random",
+              "shortDescription": {
+                "text": "weak-random"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "security-severity": "5.0"
+              }
+            },
+            {
+              "id": "sql_injection",
+              "name": "sql_injection",
+              "shortDescription": {
+                "text": "sql_injection"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "security-severity": "9.0"
+              }
+            },
+            {
+              "id": "n-plus-one",
+              "name": "n-plus-one",
+              "shortDescription": {
+                "text": "n-plus-one"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "security-severity": "5.0"
+              }
+            },
+            {
+              "id": "string-concat-loop",
+              "name": "string-concat-loop",
+              "shortDescription": {
+                "text": "string-concat-loop"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "security-severity": "3.0"
+              }
+            },
+            {
+              "id": "missing-public-doc",
+              "name": "missing-public-doc",
+              "shortDescription": {
+                "text": "missing-public-doc"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "security-severity": "3.0"
+              }
+            },
+            {
+              "id": "cross-file-log_injection",
+              "name": "cross-file-log_injection",
+              "shortDescription": {
+                "text": "Cross-file log_injection"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "security-severity": "5.0"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "log_injection",
+          "level": "warning",
+          "message": {
+            "text": "log_injection vulnerability: tainted data flows from line 6 to line 17"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\config\\supabase.js"
+                },
+                "region": {
+                  "startLine": 17
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium"
+          }
+        },
+        {
+          "ruleId": "hardcoded-credential",
+          "level": "error",
+          "message": {
+            "text": "Hardcoded credential: JSON Web Token detected"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\config\\supabase.js"
+                },
+                "region": {
+                  "startLine": 7
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-798",
+            "severity": "critical",
+            "fix": "JWTs in source carry whatever scope they were minted with; rotate signing keys and remove the token."
+          }
+        },
+        {
+          "ruleId": "orphan-module",
+          "level": "warning",
+          "message": {
+            "text": "Module 'D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\config\\supabase.js' has no incoming imports and is not a known entry point. It may be dead code."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\config\\supabase.js"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low"
+          }
+        },
+        {
+          "ruleId": "orphan-module",
+          "level": "warning",
+          "message": {
+            "text": "Module 'D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\data\\seedData.js' has no incoming imports and is not a known entry point. It may be dead code."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\data\\seedData.js"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low"
+          }
+        },
+        {
+          "ruleId": "unused-variable",
+          "level": "warning",
+          "message": {
+            "text": "'fs' is assigned but its value is never read"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\database.js"
+                },
+                "region": {
+                  "startLine": 3
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-561",
+            "severity": "low",
+            "fix": "Remove the assignment or use the value of 'fs'"
+          }
+        },
+        {
+          "ruleId": "orphan-module",
+          "level": "warning",
+          "message": {
+            "text": "Module 'D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\database.js' has no incoming imports and is not a known entry point. It may be dead code."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\database.js"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low"
+          }
+        },
+        {
+          "ruleId": "orphan-module",
+          "level": "warning",
+          "message": {
+            "text": "Module 'D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\middleware\\auth.js' has no incoming imports and is not a known entry point. It may be dead code."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\middleware\\auth.js"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low"
+          }
+        },
+        {
+          "ruleId": "missing-stream",
+          "level": "warning",
+          "message": {
+            "text": "`res.json()` loads the entire file/response into memory. Use a streaming API for large payloads."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\adminRoutes.js"
+                },
+                "region": {
+                  "startLine": 41
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Replace with fs.createReadStream / response.body (async iterator) to process data in chunks"
+          }
+        },
+        {
+          "ruleId": "missing-stream",
+          "level": "warning",
+          "message": {
+            "text": "`res.json()` loads the entire file/response into memory. Use a streaming API for large payloads."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\adminRoutes.js"
+                },
+                "region": {
+                  "startLine": 77
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Replace with fs.createReadStream / response.body (async iterator) to process data in chunks"
+          }
+        },
+        {
+          "ruleId": "missing-x-frame-options",
+          "level": "warning",
+          "message": {
+            "text": "HTTP handler does not set X-Frame-Options — vulnerable to clickjacking"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\adminRoutes.js"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-1021",
+            "severity": "medium",
+            "fix": "Set response.setHeader('X-Frame-Options', 'DENY') or use a CSP frame-ancestors directive"
+          }
+        },
+        {
+          "ruleId": "orphan-module",
+          "level": "warning",
+          "message": {
+            "text": "Module 'D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\adminRoutes.js' has no incoming imports and is not a known entry point. It may be dead code."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\adminRoutes.js"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low"
+          }
+        },
+        {
+          "ruleId": "blocking-main-thread",
+          "level": "warning",
+          "message": {
+            "text": "Blocking call `hashSync()` inside request handler 'post_handler' stalls the event loop under concurrent load"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js"
+                },
+                "region": {
+                  "startLine": 33
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-1050",
+            "severity": "medium",
+            "fix": "Move to an async equivalent or offload to a worker thread"
+          }
+        },
+        {
+          "ruleId": "blocking-main-thread",
+          "level": "warning",
+          "message": {
+            "text": "Blocking call `compareSync()` inside request handler 'post_handler' stalls the event loop under concurrent load"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js"
+                },
+                "region": {
+                  "startLine": 94
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-1050",
+            "severity": "medium",
+            "fix": "Move to an async equivalent or offload to a worker thread"
+          }
+        },
+        {
+          "ruleId": "blocking-main-thread",
+          "level": "warning",
+          "message": {
+            "text": "Blocking call `hashSync()` inside request handler 'post_handler' stalls the event loop under concurrent load"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js"
+                },
+                "region": {
+                  "startLine": 281
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-1050",
+            "severity": "medium",
+            "fix": "Move to an async equivalent or offload to a worker thread"
+          }
+        },
+        {
+          "ruleId": "missing-stream",
+          "level": "warning",
+          "message": {
+            "text": "`res.json()` loads the entire file/response into memory. Use a streaming API for large payloads."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js"
+                },
+                "region": {
+                  "startLine": 104
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Replace with fs.createReadStream / response.body (async iterator) to process data in chunks"
+          }
+        },
+        {
+          "ruleId": "missing-stream",
+          "level": "warning",
+          "message": {
+            "text": "`res.json()` loads the entire file/response into memory. Use a streaming API for large payloads."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js"
+                },
+                "region": {
+                  "startLine": 131
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Replace with fs.createReadStream / response.body (async iterator) to process data in chunks"
+          }
+        },
+        {
+          "ruleId": "missing-stream",
+          "level": "warning",
+          "message": {
+            "text": "`res.json()` loads the entire file/response into memory. Use a streaming API for large payloads."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js"
+                },
+                "region": {
+                  "startLine": 157
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Replace with fs.createReadStream / response.body (async iterator) to process data in chunks"
+          }
+        },
+        {
+          "ruleId": "missing-stream",
+          "level": "warning",
+          "message": {
+            "text": "`res.json()` loads the entire file/response into memory. Use a streaming API for large payloads."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js"
+                },
+                "region": {
+                  "startLine": 215
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Replace with fs.createReadStream / response.body (async iterator) to process data in chunks"
+          }
+        },
+        {
+          "ruleId": "missing-stream",
+          "level": "warning",
+          "message": {
+            "text": "`res.json()` loads the entire file/response into memory. Use a streaming API for large payloads."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js"
+                },
+                "region": {
+                  "startLine": 299
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Replace with fs.createReadStream / response.body (async iterator) to process data in chunks"
+          }
+        },
+        {
+          "ruleId": "missing-x-frame-options",
+          "level": "warning",
+          "message": {
+            "text": "HTTP handler does not set X-Frame-Options — vulnerable to clickjacking"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-1021",
+            "severity": "medium",
+            "fix": "Set response.setHeader('X-Frame-Options', 'DENY') or use a CSP frame-ancestors directive"
+          }
+        },
+        {
+          "ruleId": "weak-random",
+          "level": "warning",
+          "message": {
+            "text": "Non-cryptographic random generator `Math.random` used. The output of this PRNG is predictable and must not be used for security-sensitive values (tokens, session IDs, keys, salts, password reset codes, OTPs)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js"
+                },
+                "region": {
+                  "startLine": 205
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-330",
+            "severity": "medium",
+            "fix": "Use `crypto.randomBytes(n)` (Node.js) or `crypto.getRandomValues(typedArray)` (browser)."
+          }
+        },
+        {
+          "ruleId": "orphan-module",
+          "level": "warning",
+          "message": {
+            "text": "Module 'D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js' has no incoming imports and is not a known entry point. It may be dead code."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low"
+          }
+        },
+        {
+          "ruleId": "sql_injection",
+          "level": "error",
+          "message": {
+            "text": "sql_injection vulnerability: tainted data flows from line 37 to line 38"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\evaluatorRoutes.js"
+                },
+                "region": {
+                  "startLine": 38
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-89",
+            "severity": "critical"
+          }
+        },
+        {
+          "ruleId": "sql_injection",
+          "level": "error",
+          "message": {
+            "text": "sql_injection vulnerability: tainted data flows from line 37 to line 51"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\evaluatorRoutes.js"
+                },
+                "region": {
+                  "startLine": 51
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-89",
+            "severity": "critical"
+          }
+        },
+        {
+          "ruleId": "sql_injection",
+          "level": "error",
+          "message": {
+            "text": "sql_injection vulnerability: tainted data flows from line 37 to line 52"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\evaluatorRoutes.js"
+                },
+                "region": {
+                  "startLine": 52
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-89",
+            "severity": "critical"
+          }
+        },
+        {
+          "ruleId": "missing-stream",
+          "level": "warning",
+          "message": {
+            "text": "`res.json()` loads the entire file/response into memory. Use a streaming API for large payloads."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\evaluatorRoutes.js"
+                },
+                "region": {
+                  "startLine": 27
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Replace with fs.createReadStream / response.body (async iterator) to process data in chunks"
+          }
+        },
+        {
+          "ruleId": "missing-stream",
+          "level": "warning",
+          "message": {
+            "text": "`res.json()` loads the entire file/response into memory. Use a streaming API for large payloads."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\evaluatorRoutes.js"
+                },
+                "region": {
+                  "startLine": 59
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Replace with fs.createReadStream / response.body (async iterator) to process data in chunks"
+          }
+        },
+        {
+          "ruleId": "missing-stream",
+          "level": "warning",
+          "message": {
+            "text": "`res.json()` loads the entire file/response into memory. Use a streaming API for large payloads."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\evaluatorRoutes.js"
+                },
+                "region": {
+                  "startLine": 124
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Replace with fs.createReadStream / response.body (async iterator) to process data in chunks"
+          }
+        },
+        {
+          "ruleId": "missing-x-frame-options",
+          "level": "warning",
+          "message": {
+            "text": "HTTP handler does not set X-Frame-Options — vulnerable to clickjacking"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\evaluatorRoutes.js"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-1021",
+            "severity": "medium",
+            "fix": "Set response.setHeader('X-Frame-Options', 'DENY') or use a CSP frame-ancestors directive"
+          }
+        },
+        {
+          "ruleId": "orphan-module",
+          "level": "warning",
+          "message": {
+            "text": "Module 'D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\evaluatorRoutes.js' has no incoming imports and is not a known entry point. It may be dead code."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\evaluatorRoutes.js"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low"
+          }
+        },
+        {
+          "ruleId": "sql_injection",
+          "level": "error",
+          "message": {
+            "text": "sql_injection vulnerability: tainted data flows from line 95 to line 95"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\problemRoutes.js"
+                },
+                "region": {
+                  "startLine": 95
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-89",
+            "severity": "critical"
+          }
+        },
+        {
+          "ruleId": "missing-stream",
+          "level": "warning",
+          "message": {
+            "text": "`res.json()` loads the entire file/response into memory. Use a streaming API for large payloads."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\problemRoutes.js"
+                },
+                "region": {
+                  "startLine": 18
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Replace with fs.createReadStream / response.body (async iterator) to process data in chunks"
+          }
+        },
+        {
+          "ruleId": "missing-stream",
+          "level": "warning",
+          "message": {
+            "text": "`res.json()` loads the entire file/response into memory. Use a streaming API for large payloads."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\problemRoutes.js"
+                },
+                "region": {
+                  "startLine": 52
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Replace with fs.createReadStream / response.body (async iterator) to process data in chunks"
+          }
+        },
+        {
+          "ruleId": "missing-stream",
+          "level": "warning",
+          "message": {
+            "text": "`res.json()` loads the entire file/response into memory. Use a streaming API for large payloads."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\problemRoutes.js"
+                },
+                "region": {
+                  "startLine": 69
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Replace with fs.createReadStream / response.body (async iterator) to process data in chunks"
+          }
+        },
+        {
+          "ruleId": "missing-stream",
+          "level": "warning",
+          "message": {
+            "text": "`res.json()` loads the entire file/response into memory. Use a streaming API for large payloads."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\problemRoutes.js"
+                },
+                "region": {
+                  "startLine": 86
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Replace with fs.createReadStream / response.body (async iterator) to process data in chunks"
+          }
+        },
+        {
+          "ruleId": "missing-stream",
+          "level": "warning",
+          "message": {
+            "text": "`res.json()` loads the entire file/response into memory. Use a streaming API for large payloads."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\problemRoutes.js"
+                },
+                "region": {
+                  "startLine": 99
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Replace with fs.createReadStream / response.body (async iterator) to process data in chunks"
+          }
+        },
+        {
+          "ruleId": "missing-x-frame-options",
+          "level": "warning",
+          "message": {
+            "text": "HTTP handler does not set X-Frame-Options — vulnerable to clickjacking"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\problemRoutes.js"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-1021",
+            "severity": "medium",
+            "fix": "Set response.setHeader('X-Frame-Options', 'DENY') or use a CSP frame-ancestors directive"
+          }
+        },
+        {
+          "ruleId": "orphan-module",
+          "level": "warning",
+          "message": {
+            "text": "Module 'D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\problemRoutes.js' has no incoming imports and is not a known entry point. It may be dead code."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\problemRoutes.js"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low"
+          }
+        },
+        {
+          "ruleId": "missing-stream",
+          "level": "warning",
+          "message": {
+            "text": "`res.json()` loads the entire file/response into memory. Use a streaming API for large payloads."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\publicRoutes.js"
+                },
+                "region": {
+                  "startLine": 10
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Replace with fs.createReadStream / response.body (async iterator) to process data in chunks"
+          }
+        },
+        {
+          "ruleId": "missing-stream",
+          "level": "warning",
+          "message": {
+            "text": "`res.json()` loads the entire file/response into memory. Use a streaming API for large payloads."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\publicRoutes.js"
+                },
+                "region": {
+                  "startLine": 19
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Replace with fs.createReadStream / response.body (async iterator) to process data in chunks"
+          }
+        },
+        {
+          "ruleId": "missing-stream",
+          "level": "warning",
+          "message": {
+            "text": "`res.json()` loads the entire file/response into memory. Use a streaming API for large payloads."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\publicRoutes.js"
+                },
+                "region": {
+                  "startLine": 38
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Replace with fs.createReadStream / response.body (async iterator) to process data in chunks"
+          }
+        },
+        {
+          "ruleId": "missing-stream",
+          "level": "warning",
+          "message": {
+            "text": "`res.json()` loads the entire file/response into memory. Use a streaming API for large payloads."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\publicRoutes.js"
+                },
+                "region": {
+                  "startLine": 85
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Replace with fs.createReadStream / response.body (async iterator) to process data in chunks"
+          }
+        },
+        {
+          "ruleId": "missing-stream",
+          "level": "warning",
+          "message": {
+            "text": "`res.json()` loads the entire file/response into memory. Use a streaming API for large payloads."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\publicRoutes.js"
+                },
+                "region": {
+                  "startLine": 138
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Replace with fs.createReadStream / response.body (async iterator) to process data in chunks"
+          }
+        },
+        {
+          "ruleId": "missing-stream",
+          "level": "warning",
+          "message": {
+            "text": "`res.json()` loads the entire file/response into memory. Use a streaming API for large payloads."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\publicRoutes.js"
+                },
+                "region": {
+                  "startLine": 187
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Replace with fs.createReadStream / response.body (async iterator) to process data in chunks"
+          }
+        },
+        {
+          "ruleId": "missing-x-frame-options",
+          "level": "warning",
+          "message": {
+            "text": "HTTP handler does not set X-Frame-Options — vulnerable to clickjacking"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\publicRoutes.js"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-1021",
+            "severity": "medium",
+            "fix": "Set response.setHeader('X-Frame-Options', 'DENY') or use a CSP frame-ancestors directive"
+          }
+        },
+        {
+          "ruleId": "orphan-module",
+          "level": "warning",
+          "message": {
+            "text": "Module 'D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\publicRoutes.js' has no incoming imports and is not a known entry point. It may be dead code."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\publicRoutes.js"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low"
+          }
+        },
+        {
+          "ruleId": "missing-stream",
+          "level": "warning",
+          "message": {
+            "text": "`res.json()` loads the entire file/response into memory. Use a streaming API for large payloads."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\submissionRoutes.js"
+                },
+                "region": {
+                  "startLine": 80
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Replace with fs.createReadStream / response.body (async iterator) to process data in chunks"
+          }
+        },
+        {
+          "ruleId": "missing-stream",
+          "level": "warning",
+          "message": {
+            "text": "`res.json()` loads the entire file/response into memory. Use a streaming API for large payloads."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\submissionRoutes.js"
+                },
+                "region": {
+                  "startLine": 90
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Replace with fs.createReadStream / response.body (async iterator) to process data in chunks"
+          }
+        },
+        {
+          "ruleId": "missing-x-frame-options",
+          "level": "warning",
+          "message": {
+            "text": "HTTP handler does not set X-Frame-Options — vulnerable to clickjacking"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\submissionRoutes.js"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-1021",
+            "severity": "medium",
+            "fix": "Set response.setHeader('X-Frame-Options', 'DENY') or use a CSP frame-ancestors directive"
+          }
+        },
+        {
+          "ruleId": "orphan-module",
+          "level": "warning",
+          "message": {
+            "text": "Module 'D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\submissionRoutes.js' has no incoming imports and is not a known entry point. It may be dead code."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\submissionRoutes.js"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low"
+          }
+        },
+        {
+          "ruleId": "missing-stream",
+          "level": "warning",
+          "message": {
+            "text": "`res.json()` loads the entire file/response into memory. Use a streaming API for large payloads."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js"
+                },
+                "region": {
+                  "startLine": 34
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Replace with fs.createReadStream / response.body (async iterator) to process data in chunks"
+          }
+        },
+        {
+          "ruleId": "missing-stream",
+          "level": "warning",
+          "message": {
+            "text": "`res.json()` loads the entire file/response into memory. Use a streaming API for large payloads."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js"
+                },
+                "region": {
+                  "startLine": 43
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Replace with fs.createReadStream / response.body (async iterator) to process data in chunks"
+          }
+        },
+        {
+          "ruleId": "missing-stream",
+          "level": "warning",
+          "message": {
+            "text": "`res.json()` loads the entire file/response into memory. Use a streaming API for large payloads."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js"
+                },
+                "region": {
+                  "startLine": 178
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Replace with fs.createReadStream / response.body (async iterator) to process data in chunks"
+          }
+        },
+        {
+          "ruleId": "missing-x-frame-options",
+          "level": "warning",
+          "message": {
+            "text": "HTTP handler does not set X-Frame-Options — vulnerable to clickjacking"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-1021",
+            "severity": "medium",
+            "fix": "Set response.setHeader('X-Frame-Options', 'DENY') or use a CSP frame-ancestors directive"
+          }
+        },
+        {
+          "ruleId": "orphan-module",
+          "level": "warning",
+          "message": {
+            "text": "Module 'D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js' has no incoming imports and is not a known entry point. It may be dead code."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low"
+          }
+        },
+        {
+          "ruleId": "n-plus-one",
+          "level": "warning",
+          "message": {
+            "text": "N+1 query: `upsert()` is called inside a loop (loop lines 29–55) — consider batching"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\scripts\\syncToSupabase.js"
+                },
+                "region": {
+                  "startLine": 50
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-1049",
+            "severity": "medium",
+            "fix": "Move `upsert()` outside the loop and batch the operation"
+          }
+        },
+        {
+          "ruleId": "string-concat-loop",
+          "level": "warning",
+          "message": {
+            "text": "String concatenation with '+=' inside a loop: 'totalSynced' grows O(n²). Each iteration copies the entire accumulated string."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\scripts\\syncToSupabase.js"
+                },
+                "region": {
+                  "startLine": 59
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-1046",
+            "severity": "low",
+            "fix": "Accumulate parts in an array and join() after the loop, or use StringBuilder (Java) / StringJoiner"
+          }
+        },
+        {
+          "ruleId": "orphan-module",
+          "level": "warning",
+          "message": {
+            "text": "Module 'D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\scripts\\syncToSupabase.js' has no incoming imports and is not a known entry point. It may be dead code."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\scripts\\syncToSupabase.js"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low"
+          }
+        },
+        {
+          "ruleId": "orphan-module",
+          "level": "warning",
+          "message": {
+            "text": "Module 'D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\seed.js' has no incoming imports and is not a known entry point. It may be dead code."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\seed.js"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low"
+          }
+        },
+        {
+          "ruleId": "log_injection",
+          "level": "warning",
+          "message": {
+            "text": "log_injection vulnerability: tainted data flows from line 22 to line 77"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\server.js"
+                },
+                "region": {
+                  "startLine": 77
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium"
+          }
+        },
+        {
+          "ruleId": "missing-stream",
+          "level": "warning",
+          "message": {
+            "text": "`res.json()` loads the entire file/response into memory. Use a streaming API for large payloads."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\server.js"
+                },
+                "region": {
+                  "startLine": 58
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Replace with fs.createReadStream / response.body (async iterator) to process data in chunks"
+          }
+        },
+        {
+          "ruleId": "missing-x-frame-options",
+          "level": "warning",
+          "message": {
+            "text": "HTTP handler does not set X-Frame-Options — vulnerable to clickjacking"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\server.js"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-1021",
+            "severity": "medium",
+            "fix": "Set response.setHeader('X-Frame-Options', 'DENY') or use a CSP frame-ancestors directive"
+          }
+        },
+        {
+          "ruleId": "orphan-module",
+          "level": "warning",
+          "message": {
+            "text": "Module 'D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\server.js' has no incoming imports and is not a known entry point. It may be dead code."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\server.js"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low"
+          }
+        },
+        {
+          "ruleId": "missing-public-doc",
+          "level": "warning",
+          "message": {
+            "text": "Missing doc comment on class `SupabaseService`"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 3
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Add a /** ... */ doc comment above `class SupabaseService`"
+          }
+        },
+        {
+          "ruleId": "missing-public-doc",
+          "level": "warning",
+          "message": {
+            "text": "Missing doc comment on public method `SupabaseService.syncUser`"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 6
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Add a /** ... */ doc comment above `syncUser`"
+          }
+        },
+        {
+          "ruleId": "missing-public-doc",
+          "level": "warning",
+          "message": {
+            "text": "Missing doc comment on public method `SupabaseService.syncTeam`"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 26
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Add a /** ... */ doc comment above `syncTeam`"
+          }
+        },
+        {
+          "ruleId": "missing-public-doc",
+          "level": "warning",
+          "message": {
+            "text": "Missing doc comment on public method `SupabaseService.mapTeamProblem`"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 45
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Add a /** ... */ doc comment above `mapTeamProblem`"
+          }
+        },
+        {
+          "ruleId": "missing-public-doc",
+          "level": "warning",
+          "message": {
+            "text": "Missing doc comment on public method `SupabaseService.syncTeamMember`"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 58
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Add a /** ... */ doc comment above `syncTeamMember`"
+          }
+        },
+        {
+          "ruleId": "missing-public-doc",
+          "level": "warning",
+          "message": {
+            "text": "Missing doc comment on public method `SupabaseService.syncSubmission`"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 78
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Add a /** ... */ doc comment above `syncSubmission`"
+          }
+        },
+        {
+          "ruleId": "missing-public-doc",
+          "level": "warning",
+          "message": {
+            "text": "Missing doc comment on public method `SupabaseService.syncEvaluation`"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 101
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Add a /** ... */ doc comment above `syncEvaluation`"
+          }
+        },
+        {
+          "ruleId": "missing-public-doc",
+          "level": "warning",
+          "message": {
+            "text": "Missing doc comment on public method `SupabaseService.syncAnnouncement`"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 124
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Add a /** ... */ doc comment above `syncAnnouncement`"
+          }
+        },
+        {
+          "ruleId": "missing-public-doc",
+          "level": "warning",
+          "message": {
+            "text": "Missing doc comment on public method `SupabaseService.syncContactMessage`"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 141
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "fix": "Add a /** ... */ doc comment above `syncContactMessage`"
+          }
+        },
+        {
+          "ruleId": "orphan-module",
+          "level": "warning",
+          "message": {
+            "text": "Module 'D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js' has no incoming imports and is not a known entry point. It may be dead code."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low"
+          }
+        },
+        {
+          "ruleId": "cross-file-log_injection",
+          "level": "warning",
+          "message": {
+            "text": "Cross-file taint flow from D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js:11 to D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js:19"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 19
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 0,
+              "message": {
+                "text": "taint source"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js"
+                },
+                "region": {
+                  "startLine": 11
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium",
+            "confidence": 0.7
+          }
+        },
+        {
+          "ruleId": "cross-file-log_injection",
+          "level": "warning",
+          "message": {
+            "text": "Cross-file taint flow from D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js:11 to D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js:21"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 21
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 0,
+              "message": {
+                "text": "taint source"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js"
+                },
+                "region": {
+                  "startLine": 11
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium",
+            "confidence": 0.7
+          }
+        },
+        {
+          "ruleId": "cross-file-log_injection",
+          "level": "warning",
+          "message": {
+            "text": "Cross-file taint flow from D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js:73 to D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js:19"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 19
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 0,
+              "message": {
+                "text": "taint source"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js"
+                },
+                "region": {
+                  "startLine": 73
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium",
+            "confidence": 0.7
+          }
+        },
+        {
+          "ruleId": "cross-file-log_injection",
+          "level": "warning",
+          "message": {
+            "text": "Cross-file taint flow from D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js:73 to D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js:21"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 21
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 0,
+              "message": {
+                "text": "taint source"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js"
+                },
+                "region": {
+                  "startLine": 73
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium",
+            "confidence": 0.7
+          }
+        },
+        {
+          "ruleId": "cross-file-log_injection",
+          "level": "warning",
+          "message": {
+            "text": "Cross-file taint flow from D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js:138 to D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js:19"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 19
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 0,
+              "message": {
+                "text": "taint source"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js"
+                },
+                "region": {
+                  "startLine": 138
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium",
+            "confidence": 0.7
+          }
+        },
+        {
+          "ruleId": "cross-file-log_injection",
+          "level": "warning",
+          "message": {
+            "text": "Cross-file taint flow from D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js:138 to D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js:21"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 21
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 0,
+              "message": {
+                "text": "taint source"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js"
+                },
+                "region": {
+                  "startLine": 138
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium",
+            "confidence": 0.7
+          }
+        },
+        {
+          "ruleId": "cross-file-log_injection",
+          "level": "warning",
+          "message": {
+            "text": "Cross-file taint flow from D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js:177 to D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js:19"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 19
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 0,
+              "message": {
+                "text": "taint source"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js"
+                },
+                "region": {
+                  "startLine": 177
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium",
+            "confidence": 0.7
+          }
+        },
+        {
+          "ruleId": "cross-file-log_injection",
+          "level": "warning",
+          "message": {
+            "text": "Cross-file taint flow from D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js:177 to D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js:21"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 21
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 0,
+              "message": {
+                "text": "taint source"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js"
+                },
+                "region": {
+                  "startLine": 177
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium",
+            "confidence": 0.7
+          }
+        },
+        {
+          "ruleId": "cross-file-log_injection",
+          "level": "warning",
+          "message": {
+            "text": "Cross-file taint flow from D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js:228 to D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js:19"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 19
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 0,
+              "message": {
+                "text": "taint source"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js"
+                },
+                "region": {
+                  "startLine": 228
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium",
+            "confidence": 0.7
+          }
+        },
+        {
+          "ruleId": "cross-file-log_injection",
+          "level": "warning",
+          "message": {
+            "text": "Cross-file taint flow from D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js:228 to D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js:21"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 21
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 0,
+              "message": {
+                "text": "taint source"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\authRoutes.js"
+                },
+                "region": {
+                  "startLine": 228
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium",
+            "confidence": 0.7
+          }
+        },
+        {
+          "ruleId": "cross-file-log_injection",
+          "level": "warning",
+          "message": {
+            "text": "Cross-file taint flow from D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\evaluatorRoutes.js:35 to D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js:117"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 117
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 0,
+              "message": {
+                "text": "taint source"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\evaluatorRoutes.js"
+                },
+                "region": {
+                  "startLine": 35
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium",
+            "confidence": 0.7
+          }
+        },
+        {
+          "ruleId": "cross-file-log_injection",
+          "level": "warning",
+          "message": {
+            "text": "Cross-file taint flow from D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\evaluatorRoutes.js:35 to D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js:119"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 119
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 0,
+              "message": {
+                "text": "taint source"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\evaluatorRoutes.js"
+                },
+                "region": {
+                  "startLine": 35
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium",
+            "confidence": 0.7
+          }
+        },
+        {
+          "ruleId": "cross-file-log_injection",
+          "level": "warning",
+          "message": {
+            "text": "Cross-file taint flow from D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\evaluatorRoutes.js:72 to D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js:117"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 117
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 0,
+              "message": {
+                "text": "taint source"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\evaluatorRoutes.js"
+                },
+                "region": {
+                  "startLine": 72
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium",
+            "confidence": 0.7
+          }
+        },
+        {
+          "ruleId": "cross-file-log_injection",
+          "level": "warning",
+          "message": {
+            "text": "Cross-file taint flow from D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\evaluatorRoutes.js:72 to D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js:119"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 119
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 0,
+              "message": {
+                "text": "taint source"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\evaluatorRoutes.js"
+                },
+                "region": {
+                  "startLine": 72
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium",
+            "confidence": 0.7
+          }
+        },
+        {
+          "ruleId": "cross-file-log_injection",
+          "level": "warning",
+          "message": {
+            "text": "Cross-file taint flow from D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\submissionRoutes.js:9 to D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js:94"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 94
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 0,
+              "message": {
+                "text": "taint source"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\submissionRoutes.js"
+                },
+                "region": {
+                  "startLine": 9
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium",
+            "confidence": 0.7
+          }
+        },
+        {
+          "ruleId": "cross-file-log_injection",
+          "level": "warning",
+          "message": {
+            "text": "Cross-file taint flow from D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\submissionRoutes.js:9 to D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js:96"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 96
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 0,
+              "message": {
+                "text": "taint source"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\submissionRoutes.js"
+                },
+                "region": {
+                  "startLine": 9
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium",
+            "confidence": 0.7
+          }
+        },
+        {
+          "ruleId": "cross-file-log_injection",
+          "level": "warning",
+          "message": {
+            "text": "Cross-file taint flow from D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js:61 to D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js:38"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 38
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 0,
+              "message": {
+                "text": "taint source"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js"
+                },
+                "region": {
+                  "startLine": 61
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium",
+            "confidence": 0.7
+          }
+        },
+        {
+          "ruleId": "cross-file-log_injection",
+          "level": "warning",
+          "message": {
+            "text": "Cross-file taint flow from D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js:61 to D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js:40"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 40
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 0,
+              "message": {
+                "text": "taint source"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js"
+                },
+                "region": {
+                  "startLine": 61
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium",
+            "confidence": 0.7
+          }
+        },
+        {
+          "ruleId": "cross-file-log_injection",
+          "level": "warning",
+          "message": {
+            "text": "Cross-file taint flow from D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js:61 to D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js:71"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 71
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 0,
+              "message": {
+                "text": "taint source"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js"
+                },
+                "region": {
+                  "startLine": 61
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium",
+            "confidence": 0.7
+          }
+        },
+        {
+          "ruleId": "cross-file-log_injection",
+          "level": "warning",
+          "message": {
+            "text": "Cross-file taint flow from D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js:61 to D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js:73"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 73
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 0,
+              "message": {
+                "text": "taint source"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js"
+                },
+                "region": {
+                  "startLine": 61
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium",
+            "confidence": 0.7
+          }
+        },
+        {
+          "ruleId": "cross-file-log_injection",
+          "level": "warning",
+          "message": {
+            "text": "Cross-file taint flow from D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js:61 to D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js:51"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 51
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 0,
+              "message": {
+                "text": "taint source"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js"
+                },
+                "region": {
+                  "startLine": 61
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium",
+            "confidence": 0.7
+          }
+        },
+        {
+          "ruleId": "cross-file-log_injection",
+          "level": "warning",
+          "message": {
+            "text": "Cross-file taint flow from D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js:61 to D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js:53"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 53
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 0,
+              "message": {
+                "text": "taint source"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js"
+                },
+                "region": {
+                  "startLine": 61
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium",
+            "confidence": 0.7
+          }
+        },
+        {
+          "ruleId": "cross-file-log_injection",
+          "level": "warning",
+          "message": {
+            "text": "Cross-file taint flow from D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js:150 to D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js:51"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 51
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 0,
+              "message": {
+                "text": "taint source"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js"
+                },
+                "region": {
+                  "startLine": 150
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium",
+            "confidence": 0.7
+          }
+        },
+        {
+          "ruleId": "cross-file-log_injection",
+          "level": "warning",
+          "message": {
+            "text": "Cross-file taint flow from D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js:150 to D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js:53"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 53
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 0,
+              "message": {
+                "text": "taint source"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js"
+                },
+                "region": {
+                  "startLine": 150
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium",
+            "confidence": 0.7
+          }
+        },
+        {
+          "ruleId": "cross-file-log_injection",
+          "level": "warning",
+          "message": {
+            "text": "Cross-file taint flow from D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js:150 to D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js:71"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 71
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 0,
+              "message": {
+                "text": "taint source"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js"
+                },
+                "region": {
+                  "startLine": 150
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium",
+            "confidence": 0.7
+          }
+        },
+        {
+          "ruleId": "cross-file-log_injection",
+          "level": "warning",
+          "message": {
+            "text": "Cross-file taint flow from D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js:150 to D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js:73"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 73
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 0,
+              "message": {
+                "text": "taint source"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js"
+                },
+                "region": {
+                  "startLine": 150
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium",
+            "confidence": 0.7
+          }
+        },
+        {
+          "ruleId": "cross-file-log_injection",
+          "level": "warning",
+          "message": {
+            "text": "Cross-file taint flow from D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js:191 to D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js:71"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 71
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 0,
+              "message": {
+                "text": "taint source"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js"
+                },
+                "region": {
+                  "startLine": 191
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium",
+            "confidence": 0.7
+          }
+        },
+        {
+          "ruleId": "cross-file-log_injection",
+          "level": "warning",
+          "message": {
+            "text": "Cross-file taint flow from D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js:191 to D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js:73"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\services\\supabaseService.js"
+                },
+                "region": {
+                  "startLine": 73
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 0,
+              "message": {
+                "text": "taint source"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "D:\\Projects\\Vyugam AI Hackathon\\backend\\src\\routes\\teamRoutes.js"
+                },
+                "region": {
+                  "startLine": 191
+                }
+              }
+            }
+          ],
+          "properties": {
+            "cwe": "CWE-117",
+            "severity": "medium",
+            "confidence": 0.7
+          }
+        }
+      ],
+      "properties": {
+        "projectProfile": {
+          "scanRoot": "D:\\Projects\\Vyugam AI Hackathon\\backend",
+          "modules": [],
+          "unknownFileCount": 21
+        }
+      }
+    }
+  ]
+}

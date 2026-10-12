@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff, ArrowLeft, CheckCircle, AlertCircle, Mail, User, Shield, Lock, ArrowRight, Play, Gamepad2, Trophy, Swords } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import type { UserRole } from '../../types';
 
@@ -12,26 +11,15 @@ interface LoginPageProps {
 }
 
 export function LoginPage({ initialMode = 'login', onNavigateHome, onNavigateSignup, onNavigateLogin }: LoginPageProps) {
-  // Safe navigation fallback if rendered outside BrowserRouter
-  let navigate: (path: string) => void;
-  try {
-    const nav = useNavigate();
-    navigate = (path: string) => {
-      if (path === '/' && onNavigateHome) {
-        onNavigateHome();
-      } else {
-        nav(path);
-      }
-    };
-  } catch {
-    navigate = (path: string) => {
-      if (path === '/' && onNavigateHome) {
-        onNavigateHome();
-      } else if (onNavigateSignup) {
-        onNavigateSignup();
-      }
-    };
-  }
+  const navigate = (path: string) => {
+    if (path === '/' && onNavigateHome) {
+      onNavigateHome();
+    } else if (onNavigateSignup) {
+      onNavigateSignup();
+    } else if (onNavigateHome) {
+      onNavigateHome();
+    }
+  };
 
   const { login, register, forgotPassword, resetPassword } = useAuth();
 

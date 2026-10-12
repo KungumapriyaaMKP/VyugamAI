@@ -23,5 +23,18 @@
     "3000-users"
   ],
   "author": "Vyugam Dev Team",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "circle-ir": "^4.14.1",
+    "cognium-ai": "^4.19.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KungumapriyaaMKP/VyugamAI.git"
+  },
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/KungumapriyaaMKP/VyugamAI/issues"
+  },
+  "homepage": "https://github.com/KungumapriyaaMKP/VyugamAI#readme"
 }

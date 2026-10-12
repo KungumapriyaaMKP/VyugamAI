@@ -36,14 +36,6 @@ const MainAppContent: React.FC = () => {
     mode: 'login'
   });
 
-  if (isAuthLoading) {
-    return (
-      <div className="min-h-screen w-screen bg-[#fbf9fe] flex flex-col items-center justify-center p-6 select-none">
-        <PencilLoader size={180} text="Entering Vyugam Arena..." />
-      </div>
-    );
-  }
-
   // Synchronize state with browser URL hash
   useEffect(() => {
     const handleHashChange = () => {
@@ -154,6 +146,14 @@ const MainAppContent: React.FC = () => {
   const handleCloseAuthModal = () => {
     setAuthModalState(prev => ({ ...prev, isOpen: false }));
   };
+
+  if (isAuthLoading) {
+    return (
+      <div className="min-h-screen w-screen bg-[#fbf9fe] flex flex-col items-center justify-center p-6 select-none">
+        <PencilLoader size={180} text="Entering Vyugam Arena..." />
+      </div>
+    );
+  }
 
   if (activeTab === 'login-page' || activeTab === 'signup-page') {
     return (
