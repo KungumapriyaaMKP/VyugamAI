@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
-import { Plus, Minus, HelpCircle, ArrowRight } from 'lucide-react';
+import { Plus, Minus, HelpCircle } from 'lucide-react';
 
 interface FAQSectionProps {
   setActiveTab?: (tab: string) => void;
 }
 
-export const FAQSection: React.FC<FAQSectionProps> = ({ setActiveTab }) => {
+export const FAQSection: React.FC<FAQSectionProps> = () => {
   const faqs = [
     {
       q: 'Who is eligible to participate in Vyugam AI Hackathon 2026?',
-      a: 'All undergraduate and postgraduate college students from recognized engineering, technology, and science institutes across India are eligible to participate.'
+      a: 'All undergraduate and postgraduate students of Sri Eshwar College of Engineering across all engineering, technology, and science departments are eligible to participate.'
     },
     {
       q: 'What is the team size and composition requirement?',
-      a: 'Each team must consist of 2 to 4 members. Multi-disciplinary teams across departments and years are encouraged.'
+      a: 'Each team must consist of exactly 4 members (1 Team Leader + 3 Members). Multi-disciplinary teams across departments and years are encouraged.'
     },
     {
       q: 'How many problem statements can a team select?',
@@ -54,19 +54,6 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ setActiveTab }) => {
             <p className="text-slate-600 text-sm sm:text-base leading-relaxed max-w-sm">
               Everything you need to know about joining Vyugam AI Hackathon, our problem statements, and the evaluation process.
             </p>
-
-            {setActiveTab && (
-              <div className="pt-2">
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('faq')}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-none bg-[#2e1065] hover:bg-[#3b0764] text-white text-xs font-bold transition-all shadow-sm cursor-pointer group"
-                >
-                  <span>Open Full FAQ Knowledge Base</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </button>
-              </div>
-            )}
           </div>
 
           {/* Right Column: Clean Accordion List */}

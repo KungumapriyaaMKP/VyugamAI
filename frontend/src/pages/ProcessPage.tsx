@@ -27,10 +27,10 @@ export const ProcessPage: React.FC<ProcessPageProps> = ({ setActiveTab, onOpenAu
   const phases = pageData?.phases || [
     {
       step: 'Stage 01',
-      title: 'Squad Assembly & Team Formation',
+      title: 'Team Formation',
       date: 'November – December 2026',
       status: 'Active',
-      desc: 'Assemble squads of 4 students, verify college ID credentials, and finalize official team registration profiles.'
+      desc: 'Assemble teams of 4 students, verify college ID credentials, and finalize official team registration profiles.'
     },
     {
       step: 'Stage 02',
@@ -54,11 +54,11 @@ export const ProcessPage: React.FC<ProcessPageProps> = ({ setActiveTab, onOpenAu
       desc: 'Build full working code models, submit GitHub repositories, and deliver video walkthrough demonstrations.'
     },
     {
-      step: 'Final Boss',
-      title: '24-Hour Arena – The Grand Final Live Gauntlet',
+      step: 'Stage 05',
+      title: '24-Hour Grand Finale Hackathon',
       date: 'February – March 2027',
       status: 'Grand Finale',
-      desc: 'Continuous physical 24-hour hackathon survival arena live on campus at Sri Eshwar College with expert juries and grand awards.'
+      desc: 'Continuous physical 24-hour hackathon live on campus at Sri Eshwar College with expert juries and grand awards.'
     }
   ];
 
@@ -96,7 +96,7 @@ export const ProcessPage: React.FC<ProcessPageProps> = ({ setActiveTab, onOpenAu
           </h1>
 
           <p className="text-base sm:text-lg text-slate-600 font-medium max-w-3xl">
-            {pageData?.subtitle || 'From Idea Inception to the 36-Hour Physical Grand Finale at Sri Eshwar College of Engineering'}
+            {pageData?.subtitle || 'From Idea Inception to the 24-Hour Physical Grand Finale at Sri Eshwar College of Engineering'}
           </p>
         </div>
       </section>

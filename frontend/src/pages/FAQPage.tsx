@@ -29,17 +29,17 @@ export const FAQPage: React.FC<FAQPageProps> = ({ setActiveTab }) => {
     {
       category: 'General',
       question: 'What is VyugamAI 2026?',
-      answer: 'VyugamAI 2026 is a premier national innovation hackathon organized by the Department of Artificial Intelligence and Data Science at Sri Eshwar College of Engineering, challenging students to build breakthrough AI, software, and hardware solutions.'
+      answer: 'VyugamAI 2026 is an internal innovation hackathon organized by the Department of Artificial Intelligence and Data Science at Sri Eshwar College of Engineering, challenging our students to build breakthrough AI, software, and hardware solutions.'
     },
     {
       category: 'Teams & Eligibility',
       question: 'What is the team size and composition?',
-      answer: 'Teams must consist of 2 to 4 members. Inter-departmental and inter-year teams within the same college or multi-disciplinary collaborations are enthusiastically encouraged.'
+      answer: 'Each team must consist of exactly 4 members (1 Team Leader + 3 Members). Inter-departmental and inter-year teams within Sri Eshwar College of Engineering or multi-disciplinary collaborations are enthusiastically encouraged.'
     },
     {
       category: 'Teams & Eligibility',
       question: 'Who is eligible to participate?',
-      answer: 'Undergraduate and postgraduate students pursuing engineering, technology, computer science, and data disciplines from recognized colleges across India.'
+      answer: 'All undergraduate and postgraduate students of Sri Eshwar College of Engineering across all engineering, technology, and computer science departments.'
     },
     {
       category: 'Submissions & Rules',
@@ -54,7 +54,7 @@ export const FAQPage: React.FC<FAQPageProps> = ({ setActiveTab }) => {
     {
       category: 'Grand Finale',
       question: 'Where will the Grand Finale take place?',
-      answer: 'The Grand Finale is a 36-hour physical hackathon hosted at the state-of-the-art Innovation Center, Sri Eshwar College of Engineering, Coimbatore.'
+      answer: 'The Grand Finale is a 24-hour physical hackathon hosted at the state-of-the-art Innovation Center, Sri Eshwar College of Engineering, Coimbatore.'
     }
   ];
 

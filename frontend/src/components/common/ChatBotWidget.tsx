@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Bot, X, Send, RotateCcw, Sparkles } from 'lucide-react';
+import { Bot, X, Send, RotateCcw } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -74,7 +74,7 @@ export const ChatBotWidget: React.FC<ChatBotWidgetProps> = ({ setActiveTab, onOp
 
     if (q.includes('register') || q.includes('sign up') || q.includes('join') || q.includes('participate') || q.includes('apply')) {
       return {
-        text: 'Registration for VyugamAI 2026 is completely FREE!\n\n1. The Team Leader registers using their college email address (@sece.ac.in for SECE participants).\n2. Create your team name and add 2 to 4 team members.\n3. Choose your chosen Problem Statement and submit your preliminary abstract/PPT.\n\nReady to get started?',
+        text: 'Registration for VyugamAI 2026 is completely FREE!\n\n1. The Team Leader registers using their college email address (@sece.ac.in for SECE participants).\n2. Create your team name and add exactly 3 team members (team of 4 students total).\n3. Choose your chosen Problem Statement and submit your preliminary abstract/PPT.\n\nReady to get started?',
         action: {
           type: 'auth',
           label: 'Register Now →',
@@ -96,7 +96,7 @@ export const ChatBotWidget: React.FC<ChatBotWidgetProps> = ({ setActiveTab, onOp
 
     if (q.includes('team') || q.includes('eligibility') || q.includes('size') || q.includes('member') || q.includes('who can')) {
       return {
-        text: '👥 Eligibility & Team Guidelines:\n\n• Team Size: 2 to 4 students per team.\n• Open to undergraduate and postgraduate students from engineering and technology colleges across India.\n• Interdisciplinary teams (combining AI, CSE, ECE, Mechanical, etc.) are strongly encouraged!\n• Each participant can only be part of one registered team.',
+        text: '👥 Eligibility & Team Guidelines:\n\n• Team Size: Exactly 4 students per team (1 Team Leader + 3 Members).\n• Exclusively open to all undergraduate and postgraduate students of Sri Eshwar College of Engineering.\n• Interdisciplinary teams (combining AI, CSE, ECE, Mechanical, etc.) are strongly encouraged!\n• Each participant can only be part of one registered team.',
         action: {
           type: 'auth',
           label: 'Create Your Team →',
@@ -209,7 +209,6 @@ export const ChatBotWidget: React.FC<ChatBotWidgetProps> = ({ setActiveTab, onOp
               <div>
                 <div className="font-serif text-sm font-bold tracking-wide flex items-center gap-1.5">
                   <span>VyugamAI Assistant</span>
-                  <Sparkles className="w-3 h-3 text-amber-300" />
                 </div>
                 <div className="text-[10px] font-mono text-purple-200/80">
                   Online &bull; Sri Eshwar AI &amp; DS

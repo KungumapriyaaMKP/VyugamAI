@@ -133,16 +133,12 @@ export const SectorsSection: React.FC<SectorsSectionProps> = ({ setActiveTab }) 
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
         <ScrollReveal direction="up" distance={20} duration={700} className="text-center max-w-3xl mx-auto space-y-3">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-none bg-purple-100/90 border border-purple-300 text-[#2e1065] text-xs font-mono font-black tracking-widest uppercase">
-            <span>⚔️ 10 COMBAT DOMAINS • CHOOSE YOUR ARENA</span>
-          </div>
-
           <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight font-sans">
-            Innovation Sectors <span className="bg-gradient-to-r from-purple-700 via-fuchsia-600 to-pink-600 bg-clip-text text-transparent">&amp; Challenge Arenas</span>
+            Innovation <span className="bg-gradient-to-r from-purple-700 via-fuchsia-600 to-pink-600 bg-clip-text text-transparent">Sectors</span>
           </h2>
 
           <p className="text-xs sm:text-sm text-slate-600 font-sans max-w-xl mx-auto">
-            Frontier domains curating real-world challenge bounties for VyugamAI 2026. Swipe or use arrow keys to browse arenas.
+            Key technology domains curating real-world problem statements for VyugamAI 2026. Swipe or use arrow keys to browse sectors.
           </p>
         </ScrollReveal>
       </div>
@@ -169,7 +165,7 @@ export const SectorsSection: React.FC<SectorsSectionProps> = ({ setActiveTab }) 
             onClick={() => setActiveTab('problems')}
             className="inline-flex items-center gap-2 px-6 py-3 bg-[#6D15C2] hover:bg-[#58119e] text-white font-mono text-xs sm:text-sm font-black tracking-wider uppercase shadow-md transition-all hover:scale-105 active:scale-95 cursor-pointer rounded-none border border-purple-400/40"
           >
-            <span>EXPLORE CHALLENGE ARENAS</span>
+            <span>EXPLORE SECTORS</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>

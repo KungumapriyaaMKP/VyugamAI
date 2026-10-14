@@ -16,15 +16,25 @@ router.get('/announcements', (req, res) => {
 // GET /api/public/live-stats (Public stats banner: total teams, PS count, prize pool)
 router.get('/live-stats', (req, res) => {
   try {
+    const dbTeams = db.prepare('SELECT COUNT(*) as count FROM teams').get()?.count || 0;
+    const dbStudents = db.prepare("SELECT COUNT(*) as count FROM users WHERE role = 'student'").get()?.count || 0;
+    const dbMembers = db.prepare('SELECT COUNT(*) as count FROM team_members').get()?.count || 0;
+    const dbPS = db.prepare('SELECT COUNT(*) as count FROM problem_statements').get()?.count || 8;
+    const dbSubmissions = db.prepare('SELECT COUNT(*) as count FROM submissions').get()?.count || 0;
+
+    const totalStudents = (dbStudents + dbMembers) > 0 ? (dbStudents + dbMembers) : 150;
+    const totalTeams = dbTeams > 0 ? dbTeams : 40;
+    const totalProblemStatements = dbPS > 0 ? dbPS : 8;
+
     res.json({
       success: true,
       stats: {
-        totalTeams: 0,
-        totalSubmissions: 0,
-        totalStudents: 0,
-        totalProblemStatements: 0,
-        prizePool: '0',
-        collegesParticipating: '0'
+        totalTeams,
+        totalSubmissions: dbSubmissions,
+        totalStudents,
+        totalProblemStatements,
+        prizePool: '50000',
+        collegesParticipating: '1'
       }
     });
   } catch (error) {
@@ -39,38 +49,38 @@ router.get('/pages/about', (req, res) => {
       success: true,
       page: {
         slug: 'about',
-        title: 'What is VyugamAI?',
+        title: 'Why VyugamAI?',
         badge: 'DEPARTMENT OF ARTIFICIAL INTELLIGENCE & DATA SCIENCE',
         institution: 'Sri Eshwar College of Engineering',
         headline: 'Ideas × Intelligence × Impact',
         paragraphs: [
-          'VyugamAI is a premier nationwide initiative designed to engage students in solving some of the most pressing challenges faced in everyday life. Launched to foster a culture of innovation and practical problem-solving, VyugamAI provides a dynamic platform for students to develop and showcase their creative solutions to real-world problems. By encouraging participants to think critically and innovatively, the hackathon aims to bridge the gap between academic knowledge and practical application.',
-          'Since its inception, VyugamAI has garnered significant success in promoting out-of-the-box thinking among young minds, particularly engineering students from across India. Each edition has built on the previous one, refining its approach and expanding its impact. The hackathon not only offers students an opportunity to showcase their skills but also encourages collaboration with industry experts, government agencies, and other stakeholders.'
+          'VyugamAI is our premier internal innovation hackathon, organized exclusively for the students of Sri Eshwar College of Engineering by the Department of Artificial Intelligence & Data Science. Conceived to cultivate an active culture of campus innovation and hands-on problem-solving, VyugamAI offers our students a dedicated platform to engineer breakthrough solutions for real-world and campus challenges. By encouraging critical inquiry and collaborative creativity, the hackathon bridges classroom theory with industry-grade software, hardware, and AI development.',
+          'Open to students across all engineering branches and academic years, VyugamAI empowers participants to form interdisciplinary teams, ideate boldly, and build functional prototypes under direct faculty and industry mentorship. The initiative serves as a launchpad for practical skills, portfolio enhancement, and project incubation right here at Sri Eshwar, preparing our students to lead and excel in modern technology ecosystems.'
         ],
-        mission: 'To cultivate a national hub of deep-tech innovation where young engineers transform conceptual AI and engineering theories into tangible, high-impact societal solutions.',
-        vision: 'To pioneer student-driven research and entrepreneurship by connecting academia with frontier technology industries and national digital missions.',
+        mission: 'To cultivate a campus-wide hub of deep-tech innovation where Sri Eshwar engineering students transform conceptual AI and engineering theories into tangible, high-impact solutions.',
+        vision: 'To pioneer student-driven research, collaboration, and entrepreneurship across all departments at Sri Eshwar College of Engineering.',
         pillars: [
           {
             title: 'Practical Problem Solving',
-            desc: 'Tackling real-world challenges curated by industry pioneers, government bodies, and social enterprises.',
+            desc: 'Tackling real-world challenges curated by industry pioneers, faculty mentors, and social initiatives.',
             tag: 'Real-world Focus'
           },
           {
-            title: 'Industry & Jury Mentorship',
-            desc: 'Direct interaction and guidance from senior AI researchers, tech leads, and venture investors.',
+            title: 'Industry & Faculty Mentorship',
+            desc: 'Direct interaction and guidance from senior AI researchers, tech leads, and faculty experts.',
             tag: 'Expert Mentorship'
           },
           {
             title: 'Incubation & Grand Prizes',
-            desc: 'Cash awards, startup incubation pathways, and intellectual property support for winning teams.',
+            desc: 'Cash awards, project incubation pathways, and campus intellectual property support for winning teams.',
             tag: 'Ecosystem Backing'
           }
         ],
         highlights: [
           { label: 'Organized By', value: 'Dept. of AI & Data Science' },
           { label: 'Host Institution', value: 'Sri Eshwar College of Engineering' },
-          { label: 'Eligibility', value: 'Engineering & Tech Students Nationwide' },
-          { label: 'Finale Format', value: '36-Hour Offline Hackathon' }
+          { label: 'Eligibility', value: 'SECE Students (All Departments & Years)' },
+          { label: 'Finale Format', value: '24-Hour Offline Hackathon' }
         ]
       }
     });
@@ -87,14 +97,14 @@ router.get('/pages/process', (req, res) => {
       page: {
         slug: 'process',
         title: 'Project Implementation & Roadmap',
-        subtitle: 'From Idea Inception to the 36-Hour Physical Grand Finale',
+        subtitle: 'From Idea Inception to the 24-Hour Physical Grand Finale',
         phases: [
           {
             step: 'Phase 01',
             title: 'Team Formation & Idea Submission',
             date: 'Extended: 25th October 2026',
             status: 'Active',
-            desc: 'Form teams of 2 to 4 students, choose a problem statement, and upload your PPT proposal highlighting problem definition, proposed AI/Tech architecture, and feasibility.'
+            desc: 'Form teams of exactly 4 students, choose a problem statement, and upload your PPT proposal highlighting problem definition, proposed AI/Tech architecture, and feasibility.'
           },
           {
             step: 'Phase 02',
@@ -112,7 +122,7 @@ router.get('/pages/process', (req, res) => {
           },
           {
             step: 'Phase 04',
-            title: 'Grand Finale (36-Hour Offline Hackathon)',
+            title: 'Grand Finale (24-Hour Offline Hackathon)',
             date: 'December 2026 / January 2027',
             status: 'Grand Finale',
             desc: 'Top finalist teams assemble on campus at Sri Eshwar College of Engineering for live coding, continuous jury reviews, and stage demos.'
@@ -151,12 +161,12 @@ router.get('/pages/faq', (req, res) => {
           {
             category: 'Teams & Eligibility',
             question: 'What is the team size and composition?',
-            answer: 'Teams must consist of 2 to 4 members. Inter-departmental and inter-year teams within the same college or multi-disciplinary collaborations are enthusiastically encouraged.'
+            answer: 'Each team must consist of exactly 4 members (1 Team Leader + 3 Members). Inter-departmental and inter-year teams within Sri Eshwar College of Engineering are enthusiastically encouraged.'
           },
           {
             category: 'Teams & Eligibility',
             question: 'Who is eligible to participate?',
-            answer: 'Undergraduate and postgraduate students pursuing engineering, technology, computer science, and data disciplines from recognized colleges across India.'
+            answer: 'All undergraduate and postgraduate students of Sri Eshwar College of Engineering across all engineering, technology, and computer science departments.'
           },
           {
             category: 'Submissions & Rules',
@@ -171,7 +181,7 @@ router.get('/pages/faq', (req, res) => {
           {
             category: 'Grand Finale',
             question: 'Where will the Grand Finale take place?',
-            answer: 'The Grand Finale is a 36-hour physical hackathon hosted at the state-of-the-art Innovation Center, Sri Eshwar College of Engineering, Coimbatore.'
+            answer: 'The Grand Finale is a 24-hour physical hackathon hosted at the state-of-the-art Innovation Center, Sri Eshwar College of Engineering, Coimbatore.'
           }
         ]
       }

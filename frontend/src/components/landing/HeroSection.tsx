@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowRight, ArrowDown, Play } from 'lucide-react';
 import { ScrollReveal } from '../common/ScrollReveal';
 import { VyugamTitleEffect } from '../ui/VyugamTitleEffect';
@@ -10,13 +10,67 @@ interface HeroSectionProps {
   onWatchIntro?: () => void;
 }
 
+const HERO_SLIDES = [
+  {
+    image: '/hero_slides/slide1_arena.jpg',
+    alt: 'VyugamAI Innovation Arena',
+    title: 'Hackathon Arena'
+  },
+  {
+    image: '/hero_slides/slide2_robotics.jpg',
+    alt: 'AI & Robotics Innovation Lab',
+    title: 'Robotics & AI Labs'
+  },
+  {
+    image: '/hero_slides/slide3_teamwork.jpg',
+    alt: 'Engineering Teamwork & Sprint',
+    title: 'Student Innovation Teams'
+  },
+];
+
 export const HeroSection: React.FC<HeroSectionProps> = ({ setActiveTab, onWatchIntro }) => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+    }, 5500);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <section className="relative min-h-[88vh] flex flex-col justify-center bg-transparent overflow-hidden border-b border-slate-200/80 pt-8 pb-16">
       
-      {/* Subtle Atmospheric Vignette Lighting */}
-      <div className="absolute top-1/3 -right-20 w-[550px] h-[550px] bg-purple-100/40 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -top-24 -left-24 w-[450px] h-[450px] bg-slate-100/70 rounded-full blur-3xl pointer-events-none" />
+      {/* Background Slideshow Layer - strictly confined to Hero section */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
+        {HERO_SLIDES.map((slide, index) => {
+          const isActive = index === currentSlide;
+          return (
+            <div
+              key={slide.image}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                isActive ? 'opacity-85' : 'opacity-0'
+              }`}
+            >
+              <img
+                src={slide.image}
+                alt={slide.alt}
+                className={`w-full h-full object-cover object-center transition-transform duration-[6000ms] ease-out ${
+                  isActive ? 'scale-105' : 'scale-100'
+                }`}
+              />
+            </div>
+          );
+        })}
+
+        {/* Directional scrim: soft fade on the left for title readability while letting the arena/lab visuals shine across the section */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/65 to-white/25" />
+        <div className="absolute inset-0 bg-gradient-to-t from-white/85 via-transparent to-white/40 pointer-events-none" />
+        
+        {/* Soft atmospheric purple glow */}
+        <div className="absolute top-1/3 -right-20 w-[550px] h-[550px] bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -top-24 -left-24 w-[450px] h-[450px] bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+      </div>
 
       {/* Main 2-Column Split Hero Stage */}
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center relative z-10">
@@ -24,10 +78,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ setActiveTab, onWatchI
         {/* LEFT COLUMN: Editorial Typography & Actions */}
         <div className="lg:col-span-7 xl:col-span-7 space-y-7">
           
-
           {/* Main Headline - Large & Immediate */}
           <ScrollReveal direction="up" distance={8} delay={0} duration={300}>
-            <h1 className="font-serif text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[108px] font-black text-[#2e1065] leading-none tracking-tight uppercase">
+            <h1 className="font-serif text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[108px] font-black text-[#2e1065] leading-none tracking-tight uppercase drop-shadow-[0_2px_12px_rgba(255,255,255,0.9)]">
               <VyugamTitleEffect />
             </h1>
           </ScrollReveal>
@@ -39,13 +92,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ setActiveTab, onWatchI
                 onClick={() => setActiveTab('student-portal')}
                 className="inline-flex items-center gap-2.5 px-7 py-3.5 bg-gradient-to-r from-purple-700 via-purple-900 to-[#1e0a3c] hover:from-purple-800 hover:to-indigo-900 text-white text-xs sm:text-sm font-mono font-black tracking-wider uppercase transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(147,51,234,0.35)] cursor-pointer rounded-none relative group"
               >
-                <span>CREATE SQUAD</span>
+                <span>CREATE TEAM</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
 
               <button
                 onClick={() => setActiveTab('problems')}
-                className="inline-flex items-center gap-2 px-7 py-3.5 bg-white hover:bg-purple-50/60 text-slate-800 text-xs sm:text-sm font-mono font-black tracking-wider uppercase border-2 border-purple-200 transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-2xs rounded-none"
+                className="inline-flex items-center gap-2 px-7 py-3.5 bg-white/90 hover:bg-purple-50 text-slate-800 text-xs sm:text-sm font-mono font-black tracking-wider uppercase border-2 border-purple-200 transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-2xs rounded-none backdrop-blur-xs"
               >
                 <span>VIEW PROBLEM STATEMENTS</span>
                 <ArrowDown className="w-4 h-4 text-purple-600" />
@@ -54,7 +107,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ setActiveTab, onWatchI
               {onWatchIntro && (
                 <button
                   onClick={onWatchIntro}
-                  className="inline-flex items-center gap-2 px-6 py-3.5 bg-purple-50 hover:bg-purple-100 text-[#2e1065] text-xs sm:text-sm font-mono font-black tracking-wider uppercase border border-purple-200 transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-2xs rounded-none"
+                  className="inline-flex items-center gap-2 px-6 py-3.5 bg-purple-50/90 hover:bg-purple-100 text-[#2e1065] text-xs sm:text-sm font-mono font-black tracking-wider uppercase border border-purple-200 transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-2xs rounded-none backdrop-blur-xs"
                 >
                   <Play className="w-3.5 h-3.5 fill-[#2e1065]" />
                   <span>WATCH INTRO</span>
@@ -69,8 +122,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ setActiveTab, onWatchI
               <CountdownTimer />
             </div>
           </ScrollReveal>
-
-
 
         </div>
 
@@ -99,6 +150,23 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ setActiveTab, onWatchI
           </ScrollReveal>
         </div>
 
+      </div>
+
+      {/* Subtle Slide Indicators at bottom center */}
+      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 pointer-events-auto">
+        {HERO_SLIDES.map((slide, idx) => (
+          <button
+            key={idx}
+            onClick={() => setCurrentSlide(idx)}
+            className={`transition-all duration-300 rounded-full cursor-pointer ${
+              idx === currentSlide
+                ? 'w-7 h-1.5 bg-purple-600 shadow-xs'
+                : 'w-2 h-1.5 bg-purple-300/60 hover:bg-purple-400'
+            }`}
+            title={slide.title}
+            aria-label={`Go to slide ${idx + 1}: ${slide.title}`}
+          />
+        ))}
       </div>
 
     </section>

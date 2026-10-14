@@ -41,7 +41,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ setActiveTab, onOpenAuthMo
           </div>
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-[#0a2540] tracking-tight font-serif">
-            What is <span className="text-[#1755a7]">VyugamAI</span>?
+            Why <span className="text-[#1755a7]">VyugamAI</span>?
           </h1>
 
           <p className="text-base sm:text-lg text-[#1755a7] font-bold max-w-3xl">
@@ -59,11 +59,11 @@ export const AboutPage: React.FC<AboutPageProps> = ({ setActiveTab, onOpenAuthMo
             {/* Story Text */}
             <div className="lg:col-span-8 space-y-6 text-slate-800 text-base sm:text-lg leading-relaxed">
               <p className="font-serif text-lg sm:text-xl text-slate-900 leading-relaxed font-normal">
-                {pageData?.paragraphs?.[0] || `VyugamAI is a premier nationwide initiative designed to engage students in solving some of the most pressing challenges faced in everyday life. Launched to foster a culture of innovation and practical problem-solving, VyugamAI provides a dynamic platform for students to develop and showcase their creative solutions to real-world problems. By encouraging participants to think critically and innovatively, the hackathon aims to bridge the gap between academic knowledge and practical application.`}
+                {pageData?.paragraphs?.[0] || `VyugamAI is our premier internal innovation hackathon, organized exclusively for the students of Sri Eshwar College of Engineering by the Department of Artificial Intelligence & Data Science. Conceived to cultivate an active culture of campus innovation and hands-on problem-solving, VyugamAI offers our students a dedicated platform to engineer breakthrough solutions for real-world and campus challenges. By encouraging critical inquiry and collaborative creativity, the hackathon bridges classroom theory with industry-grade software, hardware, and AI development.`}
               </p>
 
               <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-                {pageData?.paragraphs?.[1] || `Since its inception, VyugamAI has garnered significant success in promoting out-of-the-box thinking among young minds, particularly engineering students from across India. Each edition has built on the previous one, refining its approach and expanding its impact. The hackathon not only offers students an opportunity to showcase their skills but also encourages collaboration with industry experts, government agencies, and other stakeholders.`}
+                {pageData?.paragraphs?.[1] || `Open to students across all engineering branches and academic years, VyugamAI empowers participants to form interdisciplinary teams, ideate boldly, and build functional prototypes under direct faculty and industry mentorship. The initiative serves as a launchpad for practical skills, portfolio enhancement, and project incubation right here at Sri Eshwar, preparing our students to lead and excel in modern technology ecosystems.`}
               </p>
 
               {/* Mission & Vision Cards */}
@@ -74,7 +74,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ setActiveTab, onOpenAuthMo
                   </div>
                   <h3 className="text-base font-bold text-[#0a2540]">Our Mission</h3>
                   <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                    {pageData?.mission || 'To cultivate a national hub of deep-tech innovation where young engineers transform conceptual AI and engineering theories into tangible, high-impact societal solutions.'}
+                    {pageData?.mission || 'To cultivate a campus-wide hub of deep-tech innovation where Sri Eshwar engineering students transform conceptual AI and engineering theories into tangible, high-impact solutions.'}
                   </p>
                 </div>
 
@@ -84,7 +84,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ setActiveTab, onOpenAuthMo
                   </div>
                   <h3 className="text-base font-bold text-[#0a2540]">Our Vision</h3>
                   <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                    {pageData?.vision || 'To pioneer student-driven research and entrepreneurship by connecting academia with frontier technology industries and national digital missions.'}
+                    {pageData?.vision || 'To pioneer student-driven research, collaboration, and entrepreneurship across all departments at Sri Eshwar College of Engineering.'}
                   </p>
                 </div>
               </div>
@@ -119,7 +119,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ setActiveTab, onOpenAuthMo
                     <Users className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
                     <div>
                       <div className="text-slate-400">Eligibility</div>
-                      <div className="font-bold text-white mt-0.5">Engineers & Tech Students Nationwide</div>
+                      <div className="font-bold text-white mt-0.5">SECE Students (All Departments &amp; Years)</div>
                     </div>
                   </div>
 
@@ -127,7 +127,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ setActiveTab, onOpenAuthMo
                     <Trophy className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
                     <div>
                       <div className="text-slate-400">Grand Finale</div>
-                      <div className="font-bold text-white mt-0.5">36-Hour Offline Physical Hackathon</div>
+                      <div className="font-bold text-white mt-0.5">24-Hour Offline Physical Hackathon</div>
                     </div>
                   </div>
                 </div>

@@ -14,7 +14,7 @@ export const AboutSection: React.FC = () => {
         {/* Header Style */}
         <ScrollReveal direction="up" distance={20} duration={700} className="text-center max-w-3xl mx-auto space-y-3">
           <h2 className="text-3xl sm:text-5xl font-extrabold text-[#0a2540] tracking-tight font-serif">
-            What is <span className="text-[#1755a7]">VyugamAI</span>?
+            Why <span className="text-[#1755a7]">VyugamAI</span>?
           </h2>
 
           <p className="text-xs sm:text-sm text-[#1755a7] font-bold tracking-wide">
@@ -25,11 +25,11 @@ export const AboutSection: React.FC = () => {
         {/* Narrative & Story Section */}
         <ScrollReveal direction="up" distance={24} delay={100} duration={750} className="space-y-6 text-slate-800 text-sm sm:text-base leading-relaxed max-w-4xl mx-auto">
           <p className="font-serif text-base sm:text-lg text-slate-900 leading-relaxed font-normal">
-            VyugamAI is a premier nationwide initiative designed to engage students in solving some of the most pressing challenges faced in everyday life. Launched to foster a culture of innovation and practical problem-solving, VyugamAI provides a dynamic platform for students to develop and showcase their creative solutions to real-world problems. By encouraging participants to think critically and innovatively, the hackathon aims to bridge the gap between academic knowledge and practical application.
+            VyugamAI is our premier internal innovation hackathon, organized exclusively for the students of Sri Eshwar College of Engineering by the Department of Artificial Intelligence &amp; Data Science. Conceived to cultivate an active culture of campus innovation and hands-on problem-solving, VyugamAI offers our students a dedicated platform to engineer breakthrough solutions for real-world and campus challenges. By encouraging critical inquiry and collaborative creativity, the hackathon bridges classroom theory with industry-grade software, hardware, and AI development.
           </p>
 
           <p className="text-slate-600 leading-relaxed">
-            Since its inception, VyugamAI has garnered significant success in promoting out-of-the-box thinking among young minds, particularly engineering students from across India. Each edition has built on the previous one, refining its approach and expanding its impact. The hackathon not only offers students an opportunity to showcase their skills but also encourages collaboration with industry experts, government agencies, and other stakeholders.
+            Open to students across all engineering branches and academic years, VyugamAI empowers participants to form interdisciplinary teams, ideate boldly, and build functional prototypes under direct faculty and industry mentorship. The initiative serves as a launchpad for practical skills, portfolio enhancement, and project incubation right here at Sri Eshwar, preparing our students to lead and excel in modern technology ecosystems.
           </p>
         </ScrollReveal>
 

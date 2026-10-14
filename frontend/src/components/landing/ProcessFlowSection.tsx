@@ -10,15 +10,11 @@ export const ProcessFlowSection: React.FC = () => {
       {/* Lead-in Header */}
       <div className="pt-20 pb-12 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
         <ScrollReveal direction="up" distance={20} duration={650} className="space-y-3">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-none bg-purple-50 border border-purple-200 text-[#2e1065] text-xs font-mono font-black tracking-widest uppercase shadow-2xs">
-            <span>🎮 LEVEL ROADMAP • 2026–2027</span>
-          </div>
-
           <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight font-sans">
             Project Timeline <span className="text-[#2e1065]">2026–2027</span>
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 font-medium max-w-2xl mx-auto">
-            Scroll horizontally through the 5 battle stages — from Squad Assembly and Problem Selection to the 24-Hour Arena Grand Finale Gauntlet.
+            Scroll
           </p>
         </ScrollReveal>
       </div>

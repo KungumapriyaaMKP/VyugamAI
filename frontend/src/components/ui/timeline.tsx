@@ -111,8 +111,8 @@ export const allJourneyItems: JourneyItem[] = [
     id: "stage-01",
     stage: "Stage 01",
     timeframe: "November – December 2026",
-    title: "Squad Assembly & Team Formation",
-    content: "Assemble teams of 4 students, verify collegiate domains, and finalize official squad profiles.",
+    title: "Team Formation",
+    content: "Assemble teams of 4 students, verify collegiate domains, and finalize official team profiles.",
   },
   {
     id: "stage-02",
@@ -136,11 +136,11 @@ export const allJourneyItems: JourneyItem[] = [
     content: "Engineer full working prototypes, commit code to GitHub, and deliver video walkthrough demos.",
   },
   {
-    id: "final-boss",
-    stage: "Final Boss",
+    id: "stage-05",
+    stage: "Stage 05",
     timeframe: "February – March 2027",
-    title: "24-Hour Arena – The Grand Final Live Gauntlet",
-    content: "Continuous 36-hour physical hackathon survival arena live on campus with expert jury awards.",
+    title: "24-Hour Grand Finale Hackathon",
+    content: "Continuous 24-hour physical hackathon live on campus at Sri Eshwar College with expert jury awards.",
   },
 ];
 
