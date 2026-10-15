@@ -8,7 +8,7 @@ import { CreateTeamModal } from './CreateTeamModal';
 import { IdeaSubmissionForm } from './IdeaSubmissionForm';
 
 export const StudentDashboard: React.FC = () => {
-  const { user } = useAuth();
+  const { user, switchDemoRole } = useAuth();
   const [teamData, setTeamData] = useState<Team | null>(null);
   const [hasTeam, setHasTeam] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -60,6 +60,45 @@ export const StudentDashboard: React.FC = () => {
     );
   }
 
+  if (!user) {
+    return (
+      <div className="py-16 max-w-2xl mx-auto px-4">
+        <div className="bg-white p-8 sm:p-10 rounded-none text-center border border-slate-200 space-y-6 shadow-sm">
+          <div className="w-16 h-16 bg-purple-50 border border-purple-200 rounded-none flex items-center justify-center mx-auto text-[#2e1065]">
+            <Users className="w-8 h-8" />
+          </div>
+
+          <div className="space-y-2">
+            <h2 className="text-2xl font-black text-slate-900 font-serif">Student Portal Access</h2>
+            <p className="text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
+              Please sign in with your official Sri Eshwar College of Engineering (@sece.ac.in) student account to form or manage your 4-member hackathon team.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+            <button
+              onClick={() => {
+                window.location.hash = '#login';
+              }}
+              className="w-full sm:w-auto px-6 py-3 bg-[#2e1065] hover:bg-[#3b0764] text-white font-mono text-xs font-bold uppercase tracking-wider shadow-md transition-all cursor-pointer"
+            >
+              Sign In with SECE Mail
+            </button>
+            <button
+              onClick={async () => {
+                await switchDemoRole('student');
+                fetchTeam();
+              }}
+              className="w-full sm:w-auto px-6 py-3 bg-purple-50 hover:bg-purple-100 text-[#2e1065] border border-purple-200 font-mono text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+            >
+              Quick Demo Login (Arjun Vikram)
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (!hasTeam) {
     return (
       <div className="py-12 max-w-4xl mx-auto px-4">
@@ -77,7 +116,7 @@ export const StudentDashboard: React.FC = () => {
             </h1>
             <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-serif">Register Your Hackathon Team</h2>
             <p className="text-sm sm:text-base font-semibold text-slate-900 leading-relaxed">
-              Form a team of 4 students to select problem statements, collaborate on code repositories, and submit project proposals for Vyugam AI evaluation.
+              Form a team of exactly 4 students to select problem statements, collaborate on code repositories, and submit project proposals for Vyugam AI evaluation.
             </p>
           </div>
 

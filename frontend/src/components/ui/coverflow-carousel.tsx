@@ -305,6 +305,29 @@ export function CoverflowCarousel({
                   draggable={false}
                   className="h-full w-full select-none object-cover"
                 />
+
+                {/* Subtle dark gradient overlay for crystal clear contrast */}
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/15 to-transparent pointer-events-none" />
+
+                {/* In-Card Track Pill Badge */}
+                {slide.meta?.find((m) => m.label === "Track") && (
+                  <div className="absolute top-3 left-3 z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-950/80 backdrop-blur-md border border-purple-400/40 shadow-xs pointer-events-none">
+                    <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
+                    <span className="font-mono text-[10px] font-black text-purple-200 tracking-wider uppercase">
+                      {slide.meta.find((m) => m.label === "Track")?.value}
+                    </span>
+                  </div>
+                )}
+
+                {/* In-Card Category & Title */}
+                <div className="absolute bottom-3 left-3 right-3 z-10 pointer-events-none text-left">
+                  <p className="font-mono text-[9px] font-bold text-purple-300 tracking-wider uppercase drop-shadow-sm">
+                    {slide.meta?.find((m) => m.label === "Category")?.value || slide.subtitle}
+                  </p>
+                  <p className="font-sans text-xs sm:text-sm font-black text-white leading-tight tracking-tight drop-shadow-md truncate">
+                    {slide.title}
+                  </p>
+                </div>
               </div>
             ))}
           </div>

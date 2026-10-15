@@ -21,7 +21,7 @@ const SECTORS_DATA: SectorItem[] = [
     name: 'Autonomous Neural Agents',
     category: 'AGENTIC AI',
     focus: 'Multi-agent orchestration, self-correcting workflows & autonomous cognitive execution.',
-    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80',
+    image: '/sectors/track01_agentic_ai.jpg',
     icon: Bot,
   },
   {
@@ -30,7 +30,7 @@ const SECTORS_DATA: SectorItem[] = [
     name: 'Quantum Machine Intelligence',
     category: 'QUANTUM COMPUTING',
     focus: 'Variational quantum algorithms, quantum neural networks & sub-atomic acceleration.',
-    image: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=600&q=80',
+    image: '/sectors/track02_quantum.jpg',
     icon: Atom,
   },
   {
@@ -39,7 +39,7 @@ const SECTORS_DATA: SectorItem[] = [
     name: 'Bio-Neural Genomics & Health',
     category: 'HEALTHCARE & BIOTECH',
     focus: 'In-silico molecular synthesis, genomic sequence transformers & precision oncology.',
-    image: 'https://images.unsplash.com/photo-1530497610245-94d3c16cda28?auto=format&fit=crop&w=600&q=80',
+    image: '/sectors/track03_biomedical.jpg',
     icon: HeartPulse,
   },
   {
@@ -48,7 +48,7 @@ const SECTORS_DATA: SectorItem[] = [
     name: 'Cybernetic Defense & Zero-Trust AI',
     category: 'CYBERSECURITY',
     focus: 'Adversarial neural immunity, autonomous threat hunting & dark-web defense perimeters.',
-    image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80',
+    image: '/sectors/track04_cybersecurity.jpg',
     icon: ShieldCheck,
   },
   {
@@ -57,7 +57,7 @@ const SECTORS_DATA: SectorItem[] = [
     name: 'Spatial Intelligence & Vision',
     category: 'COMPUTER VISION',
     focus: '3D Gaussian splatting, real-time spatial depth, and holographic telepresence systems.',
-    image: 'https://images.unsplash.com/photo-1592478411213-6153e4ebc07d?auto=format&fit=crop&w=600&q=80',
+    image: '/sectors/track05_spatial_vision.jpg',
     icon: Eye,
   },
   {
@@ -66,7 +66,7 @@ const SECTORS_DATA: SectorItem[] = [
     name: 'FinTech Neural Dynamics & Web3',
     category: 'ALGORITHMIC FINANCE',
     focus: 'High-frequency algorithmic forecasting, fraud-immune smart contracts & decentralized risk AI.',
-    image: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=600&q=80',
+    image: '/sectors/track06_fintech.jpg',
     icon: Coins,
   },
   {
@@ -75,7 +75,7 @@ const SECTORS_DATA: SectorItem[] = [
     name: 'Autonomous Swarms & Edge Robotics',
     category: 'EDGE ROBOTICS',
     focus: 'Decentralized drone swarms, edge neural controllers & cooperative search robotics.',
-    image: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=600&q=80',
+    image: '/sectors/track07_swarms_robotics.jpg',
     icon: Cpu,
   },
   {
@@ -84,7 +84,7 @@ const SECTORS_DATA: SectorItem[] = [
     name: 'Eco-Neural Systems & Clean Energy',
     category: 'CLIMATE INTELLIGENCE',
     focus: 'Smart power grid optimization, agricultural hyperspectral AI & carbon modeling.',
-    image: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=600&q=80',
+    image: '/sectors/track08_climate_energy.jpg',
     icon: Leaf,
   },
   {
@@ -93,7 +93,7 @@ const SECTORS_DATA: SectorItem[] = [
     name: 'Multimodal Generative Synthesis',
     category: 'GENERATIVE AI',
     focus: 'Cross-modal foundation models, real-time neural audio/video engines & world simulation.',
-    image: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=600&q=80',
+    image: '/sectors/track09_generative_synthesis.jpg',
     icon: Wand2,
   },
   {
@@ -102,7 +102,7 @@ const SECTORS_DATA: SectorItem[] = [
     name: 'Neuro-Symbolic Reasoning & Logic',
     category: 'REASONING SYSTEMS',
     focus: 'Deep deductive logic architectures, formal verification & explainable AI governance.',
-    image: 'https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=600&q=80',
+    image: '/sectors/track10_neuro_symbolic.jpg',
     icon: Network,
   },
 ];

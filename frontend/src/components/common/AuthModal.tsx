@@ -70,11 +70,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, mode, onClose, onS
         {/* Modal Header */}
         <div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-black rounded-none border border-slate-300 overflow-hidden shrink-0 flex items-center justify-center shadow-xs">
+            <div className="h-10 bg-white rounded-none border border-slate-300 px-2 py-0.5 shrink-0 flex items-center justify-center shadow-xs">
               <img
-                src="/images/vyugam_official_logo.png?v=3"
+                src="/sece_logo/generated-1 (1).png"
                 alt="Vyugam AI Logo"
-                className="w-full h-full object-cover"
+                className="h-8 w-auto object-contain"
               />
             </div>
             <div>

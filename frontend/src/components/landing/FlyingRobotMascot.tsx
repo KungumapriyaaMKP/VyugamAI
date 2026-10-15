@@ -12,10 +12,10 @@ export type MascotFlightState =
 
 const ROBOT_TIPS = [
   "👋 Player 1 detected! Sri Eshwar College welcomes you to Vyugam Arena! 🚀",
-  "⚡ +1000 XP: 8 Boss Problem Statements ready for your squad!",
-  "👥 Guild Objective: Form your 4-student squad & nominate a Leader!",
-  "🏆 ₹5,00,000+ Bounty Pool & Incubation rewards await the victors!",
-  "📅 Quest Deadline: Register your squad before 25th October 2026!",
+  "⚡ 8 Curated AI Problem Statements ready for your team!",
+  "👥 Form your 4-student team & nominate a Leader!",
+  "🏆 ₹5,00,000+ Prize Pool & Incubation rewards await the winners!",
+  "📅 Registration Deadline: Register your team before 25th October 2026!",
   "🚀 Scroll down to level up through the 5 battle stages!",
 ];
 

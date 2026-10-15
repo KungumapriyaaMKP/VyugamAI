@@ -16,11 +16,11 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
           {/* Col 1: Brand & Bio */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-black rounded-none border border-slate-700/80 shadow-md overflow-hidden shrink-0 flex items-center justify-center">
+              <div className="h-12 bg-white px-2.5 py-1 rounded-none border border-slate-700/80 shadow-md shrink-0 flex items-center justify-center">
                 <img
-                  src="/images/vyugam_official_logo.png?v=5"
+                  src="/sece_logo/generated-1 (1).png"
                   alt="Vyugam AI Official Logo"
-                  className="w-full h-full object-cover"
+                  className="h-10 w-auto object-contain"
                 />
               </div>
               <div>

@@ -13,11 +13,11 @@ export const AboutSection: React.FC = () => {
         
         {/* Header Style */}
         <ScrollReveal direction="up" distance={20} duration={700} className="text-center max-w-3xl mx-auto space-y-3">
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-[#0a2540] tracking-tight font-serif">
-            Why <span className="text-[#1755a7]">VyugamAI</span>?
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight font-serif">
+            Why <span className="text-[#2e1065]">VyugamAI</span>?
           </h2>
 
-          <p className="text-xs sm:text-sm text-[#1755a7] font-bold tracking-wide">
+          <p className="text-xs sm:text-sm text-purple-600 font-bold tracking-wide">
             Ideas &times; Intelligence &times; Impact
           </p>
         </ScrollReveal>
@@ -39,7 +39,7 @@ export const AboutSection: React.FC = () => {
       <div className="absolute bottom-6 right-6">
         <button
           onClick={scrollToTop}
-          className="w-10 h-10 rounded-none bg-[#1755a7] hover:bg-blue-700 text-white flex items-center justify-center transition-all shadow-md cursor-pointer"
+          className="w-10 h-10 rounded-none bg-[#2e1065] hover:bg-purple-900 text-white flex items-center justify-center transition-all shadow-md cursor-pointer"
           title="Scroll to top"
         >
           <ChevronUp className="w-5 h-5" />

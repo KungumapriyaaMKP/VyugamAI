@@ -48,23 +48,23 @@ export const ProblemDetailModal: React.FC<ProblemDetailModalProps> = ({ problem,
         <div className="p-6 border-b border-slate-200 flex items-start justify-between bg-slate-50">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="bg-[#0a2540] text-white font-mono font-bold px-3 py-1 rounded-none text-xs">
+              <span className="bg-[#2e1065] text-white font-mono font-bold px-3 py-1 rounded-none text-xs">
                 {problem.id}
               </span>
               <span className="bg-slate-200 text-slate-800 px-3 py-1 rounded-none text-xs font-semibold">
                 {problem.category}
               </span>
-              <span className="bg-blue-50 text-[#1755a7] px-3 py-1 rounded-none text-xs font-bold border border-blue-200">
+              <span className="bg-purple-50 text-purple-700 px-3 py-1 rounded-none text-xs font-bold border border-purple-200">
                 {problem.domain_bucket}
               </span>
             </div>
-            <h2 className="text-xl md:text-2xl font-extrabold text-[#0a2540] leading-snug">
+            <h2 className="text-xl md:text-2xl font-extrabold text-slate-900 leading-snug">
               {problem.title}
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-none bg-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-300 transition-colors"
+            className="p-2 rounded-none bg-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-300 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -84,16 +84,16 @@ export const ProblemDetailModal: React.FC<ProblemDetailModalProps> = ({ problem,
 
           {/* Organization Info */}
           <div className="bg-slate-50 p-4 rounded-none flex items-center gap-3 border border-slate-200">
-            <Building className="w-5 h-5 text-[#1755a7] shrink-0" />
+            <Building className="w-5 h-5 text-purple-600 shrink-0" />
             <div>
               <div className="text-xs text-slate-500 font-semibold">Ministry / Organization</div>
-              <div className="text-[#0a2540] font-extrabold">{problem.organization}</div>
+              <div className="text-slate-900 font-extrabold">{problem.organization}</div>
             </div>
           </div>
 
           {/* Problem Statement Detail */}
           <div>
-            <h4 className="text-xs font-bold text-[#1755a7] uppercase tracking-wider mb-2 flex items-center gap-2">
+            <h4 className="text-xs font-bold text-purple-700 uppercase tracking-wider mb-2 flex items-center gap-2">
               <Layers className="w-4 h-4" />
               <span>Problem Background & Challenge Description</span>
             </h4>
@@ -117,14 +117,14 @@ export const ProblemDetailModal: React.FC<ProblemDetailModalProps> = ({ problem,
           {problem.dataset_url && (
             <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-none">
               <div className="flex items-center gap-2">
-                <ExternalLink className="w-4 h-4 text-[#1755a7]" />
+                <ExternalLink className="w-4 h-4 text-purple-600" />
                 <span className="text-xs text-slate-700 font-semibold">Dataset / Reference Code Repository</span>
               </div>
               <a
                 href={problem.dataset_url}
                 target="_blank"
                 rel="noreferrer"
-                className="text-xs font-bold text-[#1755a7] hover:underline flex items-center gap-1"
+                className="text-xs font-bold text-purple-600 hover:text-purple-800 hover:underline flex items-center gap-1"
               >
                 <span>View Repository</span>
                 <ExternalLink className="w-3 h-3" />
@@ -137,20 +137,20 @@ export const ProblemDetailModal: React.FC<ProblemDetailModalProps> = ({ problem,
         {/* Modal Footer */}
         <div className="p-6 border-t border-slate-200 bg-slate-50 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-xs text-slate-600 font-medium">
-            Selected by <span className="font-bold text-[#1755a7] font-mono">{problem.submissions_count} Teams</span> so far
+            Selected by <span className="font-bold text-purple-700 font-mono">{problem.submissions_count} Teams</span> so far
           </div>
 
           <div className="flex items-center gap-3 w-full sm:w-auto">
             <button
               onClick={onClose}
-              className="w-full sm:w-auto px-5 py-2.5 rounded-none bg-slate-200 text-slate-800 hover:bg-slate-300 font-bold text-xs transition-colors"
+              className="w-full sm:w-auto px-5 py-2.5 rounded-none bg-slate-200 text-slate-800 hover:bg-slate-300 font-bold text-xs transition-colors cursor-pointer"
             >
               Close
             </button>
             <button
               onClick={handleSelectProblem}
               disabled={isSelecting}
-              className="w-full sm:w-auto px-6 py-2.5 rounded-none bg-[#1755a7] hover:bg-blue-700 text-white font-bold text-xs shadow-md transition-all disabled:opacity-50"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-none bg-[#2e1065] hover:bg-purple-900 text-white font-bold text-xs shadow-md transition-all disabled:opacity-50 cursor-pointer"
             >
               {isSelecting ? 'Locking...' : 'Select PS for My Team'}
             </button>

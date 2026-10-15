@@ -8,8 +8,6 @@ interface ProblemFilterProps {
   setCategory: (val: string) => void;
   domain: string;
   setDomain: (val: string) => void;
-  complexity: string;
-  setComplexity: (val: string) => void;
   categories: string[];
   domains: string[];
   onReset: () => void;
@@ -22,8 +20,6 @@ export const ProblemFilter: React.FC<ProblemFilterProps> = ({
   setCategory,
   domain,
   setDomain,
-  complexity,
-  setComplexity,
   categories,
   onReset,
 }) => {
@@ -39,7 +35,7 @@ export const ProblemFilter: React.FC<ProblemFilterProps> = ({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by PS Code, Title, Tech Stack..."
-            className="w-full bg-slate-50 border border-slate-300 rounded-none pl-10 pr-9 py-2.5 text-xs md:text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#1755a7] focus:ring-1 focus:ring-[#1755a7] transition-all"
+            className="w-full bg-slate-50 border border-slate-300 rounded-none pl-10 pr-9 py-2.5 text-xs md:text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-purple-600 focus:ring-1 focus:ring-purple-600 transition-all"
           />
           {search && (
             <button
@@ -56,7 +52,7 @@ export const ProblemFilter: React.FC<ProblemFilterProps> = ({
           
           {/* Category Dropdown */}
           <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-none px-3 py-1.5 text-xs text-slate-700">
-            <Filter className="w-3.5 h-3.5 text-[#1755a7]" />
+            <Filter className="w-3.5 h-3.5 text-purple-600" />
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
@@ -80,20 +76,6 @@ export const ProblemFilter: React.FC<ProblemFilterProps> = ({
               <option value="Software">Software</option>
               <option value="Hardware">Hardware</option>
               <option value="Both">Software & Hardware</option>
-            </select>
-          </div>
-
-          {/* Complexity Dropdown */}
-          <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-none px-3 py-1.5 text-xs text-slate-700">
-            <select
-              value={complexity}
-              onChange={(e) => setComplexity(e.target.value)}
-              className="bg-transparent text-slate-800 font-semibold focus:outline-none cursor-pointer pr-2"
-            >
-              <option value="All">All Levels</option>
-              <option value="Easy">Easy</option>
-              <option value="Medium">Medium</option>
-              <option value="Hard">Hard</option>
             </select>
           </div>
 

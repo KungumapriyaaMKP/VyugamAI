@@ -17,7 +17,6 @@ export const ProblemList: React.FC = () => {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
   const [domain, setDomain] = useState('All');
-  const [complexity, setComplexity] = useState('All');
 
   // Modal state
   const [selectedProblem, setSelectedProblem] = useState<ProblemStatement | null>(null);
@@ -40,7 +39,6 @@ export const ProblemList: React.FC = () => {
       const params: any = {};
       if (category !== 'All') params.category = category;
       if (domain !== 'All') params.domain = domain;
-      if (complexity !== 'All') params.complexity = complexity;
       if (search.trim()) params.search = search.trim();
 
       const res = await apiClient.get('/problems', { params });
@@ -63,13 +61,12 @@ export const ProblemList: React.FC = () => {
       fetchProblems();
     }, 250);
     return () => clearTimeout(timer);
-  }, [search, category, domain, complexity]);
+  }, [search, category, domain]);
 
   const handleReset = () => {
     setSearch('');
     setCategory('All');
     setDomain('All');
-    setComplexity('All');
   };
 
   return (
@@ -77,12 +74,9 @@ export const ProblemList: React.FC = () => {
       
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto mb-10 space-y-3">
-        <h2 className="text-3xl md:text-5xl font-extrabold text-[#0a2540] tracking-tight font-serif">
-          Explore <span className="text-[#1755a7]">Problem Statements</span> & Innovate
+        <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight font-serif">
+          Explore <span className="text-[#2e1065]">Problem Statements</span> & Innovate
         </h2>
-        <p className="text-sm text-slate-600">
-          Filter through real world AI, cybersecurity, IoT, and hardware problems published for Vyugam AI Hackathon 2026. Select a problem statement to register your proposal.
-        </p>
       </div>
 
       {/* Filter Component */}
@@ -93,8 +87,6 @@ export const ProblemList: React.FC = () => {
         setCategory={setCategory}
         domain={domain}
         setDomain={setDomain}
-        complexity={complexity}
-        setComplexity={setComplexity}
         categories={categories}
         domains={domains}
         onReset={handleReset}
@@ -102,8 +94,7 @@ export const ProblemList: React.FC = () => {
 
       {/* Results Meta Info */}
       <div className="flex items-center justify-between text-xs text-slate-500 font-semibold mb-6 px-1">
-        <span>Showing <strong className="text-[#1755a7] font-mono text-sm">{problems.length}</strong> Problem Statements</span>
-        <span>Vyugam AI Standard Difficulty & Scoring Guidelines Applied</span>
+        <span>Showing <strong className="text-[#2e1065] font-mono text-sm">{problems.length}</strong> Problem Statements</span>
       </div>
 
       {/* Problem Cards Grid */}
@@ -120,7 +111,7 @@ export const ProblemList: React.FC = () => {
           </p>
           <button
             onClick={handleReset}
-            className="px-4 py-2 bg-[#1755a7] text-white font-bold rounded-xl text-xs hover:bg-blue-700 transition-colors"
+            className="px-4 py-2 bg-[#2e1065] text-white font-bold rounded-xl text-xs hover:bg-purple-900 transition-colors cursor-pointer"
           >
             Clear Filters
           </button>

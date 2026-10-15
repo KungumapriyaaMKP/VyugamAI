@@ -14,8 +14,6 @@ import { ProblemList } from './components/problems/ProblemList';
 import { StudentDashboard } from './components/student/StudentDashboard';
 import { EvaluatorDashboard } from './components/evaluator/EvaluatorDashboard';
 import { AdminDashboard } from './components/admin/AdminDashboard';
-import { FAQPage } from './pages/FAQPage';
-import { ContactPage } from './pages/ContactPage';
 import { AuthModal } from './components/common/AuthModal';
 import CursorMultifollow from './components/ui/motion-cursor-multifollow';
 import { ScrollReveal } from './components/common/ScrollReveal';
@@ -29,7 +27,7 @@ import { BookOpen, Layers, HelpCircle, Info, ArrowRight } from 'lucide-react';
 const MainAppContent: React.FC = () => {
   const { isLoading: isAuthLoading } = useAuth();
   const [activeTab, setActiveTab] = useState<string>('home');
-  const [showIntroVideo, setShowIntroVideo] = useState<boolean>(false);
+  const [showIntroVideo, setShowIntroVideo] = useState<boolean>(true);
   const [authModalState, setAuthModalState] = useState<{ isOpen: boolean; mode: 'login' | 'register' }>({
     isOpen: false,
     mode: 'login'
@@ -47,6 +45,10 @@ const MainAppContent: React.FC = () => {
           setTimeout(() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' }), 120);
         } else if (normalizedTab === 'process') {
           setTimeout(() => (document.getElementById('timeline') || document.getElementById('process'))?.scrollIntoView({ behavior: 'smooth' }), 120);
+        } else if (normalizedTab === 'faq') {
+          setTimeout(() => document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' }), 120);
+        } else if (normalizedTab === 'contact') {
+          setTimeout(() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }), 120);
         }
       }
     };
@@ -61,20 +63,23 @@ const MainAppContent: React.FC = () => {
 
   // Sync activeTab with scroll position when on main page
   useEffect(() => {
-    if (!['home', 'about', 'process'].includes(activeTab)) return;
+    if (!['home', 'about', 'process', 'faq', 'contact'].includes(activeTab)) return;
 
     const handleScroll = () => {
       const aboutEl = document.getElementById('about');
       const timelineEl = document.getElementById('timeline');
-      if (!aboutEl || !timelineEl) return;
+      const faqEl = document.getElementById('faq');
+      const contactEl = document.getElementById('contact');
 
       const scrollPos = window.scrollY + 250;
-      const timelineTop = timelineEl.offsetTop;
-      const aboutTop = aboutEl.offsetTop;
 
-      if (scrollPos >= timelineTop) {
+      if (contactEl && scrollPos >= contactEl.offsetTop) {
+        if (activeTab !== 'contact') setActiveTab('contact');
+      } else if (faqEl && scrollPos >= faqEl.offsetTop) {
+        if (activeTab !== 'faq') setActiveTab('faq');
+      } else if (timelineEl && scrollPos >= timelineEl.offsetTop) {
         if (activeTab !== 'process') setActiveTab('process');
-      } else if (scrollPos >= aboutTop) {
+      } else if (aboutEl && scrollPos >= aboutEl.offsetTop) {
         if (activeTab !== 'about') setActiveTab('about');
       } else {
         if (activeTab !== 'home') setActiveTab('home');
@@ -95,7 +100,7 @@ const MainAppContent: React.FC = () => {
       } else {
         setTimeout(() => {
           document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
+        }, 120);
       }
       return;
     }
@@ -109,7 +114,35 @@ const MainAppContent: React.FC = () => {
       } else {
         setTimeout(() => {
           (document.getElementById('timeline') || document.getElementById('process'))?.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
+        }, 120);
+      }
+      return;
+    }
+
+    if (tab === 'faq') {
+      setActiveTab('faq');
+      window.location.hash = '#faq';
+      const el = document.getElementById('faq');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        setTimeout(() => {
+          document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' });
+        }, 120);
+      }
+      return;
+    }
+
+    if (tab === 'contact' || tab === 'contact-us') {
+      setActiveTab('contact');
+      window.location.hash = '#contact';
+      const el = document.getElementById('contact');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        setTimeout(() => {
+          document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+        }, 120);
       }
       return;
     }
@@ -170,6 +203,8 @@ const MainAppContent: React.FC = () => {
       case 'home':
       case 'about':
       case 'process':
+      case 'faq':
+      case 'contact':
         return (
           <>
             <HeroSection setActiveTab={handleTabChange} onOpenAuthModal={handleOpenAuthModal} />
@@ -204,7 +239,7 @@ const MainAppContent: React.FC = () => {
                     {
                       id: 'problems',
                       title: 'Problem Statements',
-                      desc: '8 multidisciplinary challenges spanning AI, Healthcare, Defense, and IoT.',
+                      desc: 'Curated deep-tech challenges focused exclusively on Artificial Intelligence domains.',
                       icon: BookOpen,
                       btn: 'Browse Challenges'
                     },
@@ -267,12 +302,6 @@ const MainAppContent: React.FC = () => {
 
       case 'problems':
         return <ProblemList />;
-
-      case 'faq':
-        return <FAQPage setActiveTab={handleTabChange} />;
-
-      case 'contact':
-        return <ContactPage setActiveTab={handleTabChange} />;
 
       case 'student-portal':
         return <StudentDashboard />;

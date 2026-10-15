@@ -60,9 +60,6 @@ export const ContactSection: React.FC = () => {
                 <MessageSquare className="w-5 h-5 text-[#2e1065]" />
                 <span>Contact Hub Information</span>
               </h3>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                Our support team is available from 9:00 AM to 7:00 PM IST to assist with team registration, problem statement verification, and portal access.
-              </p>
             </div>
 
             <div className="space-y-4 text-xs">

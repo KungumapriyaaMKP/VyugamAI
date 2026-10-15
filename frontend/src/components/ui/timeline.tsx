@@ -119,13 +119,13 @@ export const allJourneyItems: JourneyItem[] = [
     stage: "Stage 02",
     timeframe: "December 2026",
     title: "Problem Statement Selection",
-    content: "Review 50+ curated problem statements across AI, FinTech, CyberSecurity, and Clean Energy.",
+    content: "Review 50+ curated problem statements strictly focused on Artificial Intelligence and Machine Learning domains.",
   },
   {
     id: "stage-03",
     stage: "Stage 03",
     timeframe: "December 2026 – January 2027",
-    title: "Idea & Architecture Blueprint",
+    title: "Ideation Phase",
     content: "Prepare technical architecture decks, system block diagrams, and submit foundational proposals.",
   },
   {

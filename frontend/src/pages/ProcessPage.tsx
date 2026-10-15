@@ -37,11 +37,11 @@ export const ProcessPage: React.FC<ProcessPageProps> = ({ setActiveTab, onOpenAu
       title: 'Problem Statement Selection',
       date: 'December 2026',
       status: 'Upcoming',
-      desc: 'Explore curated real-world problem statements across AI, CyberSecurity, FinTech, and IoT to claim track bounties.'
+      desc: 'Explore 50+ curated real-world problem statements strictly focused on Artificial Intelligence and Machine Learning domains.'
     },
     {
       step: 'Stage 03',
-      title: 'Idea & Architecture Blueprint',
+      title: 'Ideation Phase',
       date: 'December 2026 – January 2027',
       status: 'Upcoming',
       desc: 'Prepare the technical architecture presentation PPT, system block diagrams, and submit comprehensive engineering proposals.'
