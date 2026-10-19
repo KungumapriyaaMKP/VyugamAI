@@ -5,18 +5,13 @@ const { v4: uuidv4 } = require('uuid');
 function seedDatabase() {
   initDb();
 
-  // Check if users exist
-  const userCount = db.prepare('SELECT COUNT(*) as count FROM users').get().count;
-  if (userCount === 0) {
-    console.log('Seeding initial users...');
-    const insertUser = db.prepare(`
-      INSERT INTO users (id, name, email, password, role, college, department, phone)
-      VALUES (@id, @name, @email, @password, @role, @college, @department, @phone)
-    `);
-    
-    for (const u of sampleUsers) {
-      insertUser.run(u);
-    }
+  // Ensure all sample users exist
+  const insertUser = db.prepare(`
+    INSERT OR IGNORE INTO users (id, name, email, password, role, college, department, phone)
+    VALUES (@id, @name, @email, @password, @role, @college, @department, @phone)
+  `);
+  for (const u of sampleUsers) {
+    insertUser.run(u);
   }
 
   // Check if problem statements exist

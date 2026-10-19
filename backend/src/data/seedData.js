@@ -41,6 +41,16 @@ const sampleUsers = [
     college: 'Sri Eshwar College of Engineering',
     department: 'Computer Science',
     phone: '+91 91234 56789'
+  },
+  {
+    id: 'user-student-02',
+    name: 'Kungumapriyaa M',
+    email: 'kungumapriyaa.m2024aids@sece.ac.in',
+    password: bcrypt.hashSync('123456', 10),
+    role: 'student',
+    college: 'Sri Eshwar College of Engineering',
+    department: 'Department of AI & DS',
+    phone: '+91 98765 00001'
   }
 ];
 

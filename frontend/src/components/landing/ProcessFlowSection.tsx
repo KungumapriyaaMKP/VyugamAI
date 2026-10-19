@@ -27,8 +27,8 @@ export const ProcessFlowSection: React.FC = () => {
         mutedTextColor="#64748b"
         activeColor="#7e22ce"
         backgroundColor="#ffffff"
-        imageUrl="/images/vyugam_timeline_official.jpeg"
-        imageAlt="Vyugam AI Hackathon Arena"
+        imageUrl="/sece_logo/generated-1 (1).png?v=2"
+        imageAlt="Vyugam AI 2026 Official Logo"
         duration={1.2}
       />
     </section>

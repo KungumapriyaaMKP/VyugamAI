@@ -151,8 +151,8 @@ export default function Timeline({
   mutedTextColor = "var(--color-muted-foreground, #475569)",
   activeColor = "#7e22ce",
   backgroundColor = "var(--color-background, #ffffff)",
-  imageUrl = "/images/vyugam_timeline_official.jpeg",
-  imageAlt = "Vyugam AI Hackathon Timeline",
+  imageUrl = "/sece_logo/generated-1 (1).png?v=2",
+  imageAlt = "Vyugam AI Hackathon Official Logo",
 }: TimelineProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const wholeSliderRef = useRef<HTMLDivElement>(null);
@@ -329,12 +329,12 @@ export default function Timeline({
               </p>
             </div>
 
-            <div className="h-[46%] w-full overflow-hidden border border-slate-200 shadow-inner">
+            <div className="h-[46%] w-full overflow-hidden border border-slate-200 bg-white shadow-inner flex items-center justify-center p-3">
               <img
                 src={imageUrl}
                 alt={imageAlt}
                 draggable={false}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-contain"
               />
             </div>
           </div>

@@ -2,6 +2,22 @@ const { supabase } = require('../config/supabase');
 
 class SupabaseService {
 
+  // Fetch user by email from Supabase
+  async getUserByEmail(email) {
+    if (!supabase) return null;
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .ilike('email', email)
+        .maybeSingle();
+      if (error) return null;
+      return data || null;
+    } catch {
+      return null;
+    }
+  }
+
   // Sync user creation to Supabase
   async syncUser(user) {
     if (!supabase) return;

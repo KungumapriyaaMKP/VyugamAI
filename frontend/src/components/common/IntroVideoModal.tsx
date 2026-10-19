@@ -99,7 +99,7 @@ export const IntroVideoModal: React.FC<IntroVideoModalProps> = ({ isOpen, onClos
         className="w-full h-full object-cover"
         playsInline
         autoPlay
-        preload="auto"
+        preload="metadata"
         onTimeUpdate={handleTimeUpdate}
         onEnded={handleDismiss}
       >

@@ -10,24 +10,29 @@ import { SectorsSection } from './components/landing/SectorsSection';
 import { StatsBanner } from './components/common/StatsBanner';
 import { FAQSection } from './components/landing/FAQSection';
 import { ContactSection } from './components/landing/ContactSection';
-import { ProblemList } from './components/problems/ProblemList';
-import { StudentDashboard } from './components/student/StudentDashboard';
-import { EvaluatorDashboard } from './components/evaluator/EvaluatorDashboard';
-import { AdminDashboard } from './components/admin/AdminDashboard';
-import { AuthModal } from './components/common/AuthModal';
 import CursorMultifollow from './components/ui/motion-cursor-multifollow';
 import { ScrollReveal } from './components/common/ScrollReveal';
-import { LoginPage } from './components/ui/sign-in-page';
-import { IntroVideoModal } from './components/common/IntroVideoModal';
-import { ChatBotWidget } from './components/common/ChatBotWidget';
 import { useAuth } from './context/AuthContext';
 import { PencilLoader } from './components/ui/loader-1';
 import { BookOpen, Layers, HelpCircle, Info, ArrowRight } from 'lucide-react';
 
+// Lazy loaded dynamic modules to keep the initial landing page bundle ultra-light and lightning fast
+const ProblemList = React.lazy(() => import('./components/problems/ProblemList').then(m => ({ default: m.ProblemList })));
+const StudentDashboard = React.lazy(() => import('./components/student/StudentDashboard').then(m => ({ default: m.StudentDashboard })));
+const EvaluatorDashboard = React.lazy(() => import('./components/evaluator/EvaluatorDashboard').then(m => ({ default: m.EvaluatorDashboard })));
+const AdminDashboard = React.lazy(() => import('./components/admin/AdminDashboard').then(m => ({ default: m.AdminDashboard })));
+const AuthModal = React.lazy(() => import('./components/common/AuthModal').then(m => ({ default: m.AuthModal })));
+const LoginPage = React.lazy(() => import('./components/ui/sign-in-page').then(m => ({ default: m.LoginPage })));
+const IntroVideoModal = React.lazy(() => import('./components/common/IntroVideoModal').then(m => ({ default: m.IntroVideoModal })));
+const ChatBotWidget = React.lazy(() => import('./components/common/ChatBotWidget').then(m => ({ default: m.ChatBotWidget })));
+
 const MainAppContent: React.FC = () => {
   const { isLoading: isAuthLoading } = useAuth();
   const [activeTab, setActiveTab] = useState<string>('home');
-  const [showIntroVideo, setShowIntroVideo] = useState<boolean>(true);
+  const [showIntroVideo, setShowIntroVideo] = useState<boolean>(() => {
+    // Only auto-play once per browser session to prevent blocking returning users and save 14MB bandwidth
+    return !sessionStorage.getItem('vyugam_intro_shown');
+  });
   const [authModalState, setAuthModalState] = useState<{ isOpen: boolean; mode: 'login' | 'register' }>({
     isOpen: false,
     mode: 'login'
@@ -325,11 +330,18 @@ const MainAppContent: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-white text-slate-900 font-sans selection:bg-[#2e1065] selection:text-white">
-      {/* Startup Intro Video Experience */}
-      <IntroVideoModal
-        isOpen={showIntroVideo}
-        onClose={() => setShowIntroVideo(false)}
-      />
+      {/* Startup Intro Video Experience (Lazy-loaded, only buffered when active) */}
+      {showIntroVideo && (
+        <React.Suspense fallback={null}>
+          <IntroVideoModal
+            isOpen={showIntroVideo}
+            onClose={() => {
+              setShowIntroVideo(false);
+              sessionStorage.setItem('vyugam_intro_shown', 'true');
+            }}
+          />
+        </React.Suspense>
+      )}
 
       <CursorMultifollow global />
 
@@ -342,30 +354,45 @@ const MainAppContent: React.FC = () => {
       />
 
       <main className="flex-grow">
-        {renderTabContent()}
+        <React.Suspense
+          fallback={
+            <div className="min-h-[60vh] flex items-center justify-center py-20">
+              <PencilLoader size={120} text="Loading..." />
+            </div>
+          }
+        >
+          {renderTabContent()}
+        </React.Suspense>
       </main>
 
       <Footer setActiveTab={handleTabChange} />
 
-      <AuthModal
-        isOpen={authModalState.isOpen}
-        mode={authModalState.mode}
-        onClose={handleCloseAuthModal}
-        onSwitchMode={(mode) => {
-          if (mode === 'login') {
-            handleCloseAuthModal();
-            handleTabChange('login-page');
-          } else {
-            setAuthModalState({ isOpen: true, mode: 'register' });
-          }
-        }}
-      />
+      {/* Auth Modal (Loaded on-demand) */}
+      {authModalState.isOpen && (
+        <React.Suspense fallback={null}>
+          <AuthModal
+            isOpen={authModalState.isOpen}
+            mode={authModalState.mode}
+            onClose={handleCloseAuthModal}
+            onSwitchMode={(mode) => {
+              if (mode === 'login') {
+                handleCloseAuthModal();
+                handleTabChange('login-page');
+              } else {
+                setAuthModalState({ isOpen: true, mode: 'register' });
+              }
+            }}
+          />
+        </React.Suspense>
+      )}
 
-      {/* Floating Interactive VyugamAI Assistant Chatbot */}
-      <ChatBotWidget
-        setActiveTab={handleTabChange}
-        onOpenAuthModal={handleOpenAuthModal}
-      />
+      {/* Floating Interactive VyugamAI Assistant Chatbot (Lazy-loaded) */}
+      <React.Suspense fallback={null}>
+        <ChatBotWidget
+          setActiveTab={handleTabChange}
+          onOpenAuthModal={handleOpenAuthModal}
+        />
+      </React.Suspense>
     </div>
   );
 };

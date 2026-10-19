@@ -37,8 +37,8 @@ export default function TimelineDemo(props: Partial<typeof settings>) {
         textColor={s.textColor}
         mutedTextColor={s.mutedTextColor}
         activeColor={s.activeColor}
-        imageUrl="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1200&q=80"
-        imageAlt="Vyugam AI Hackathon Arena"
+        imageUrl="/sece_logo/generated-1 (1).png"
+        imageAlt="Vyugam AI 2026 Official Logo"
         duration={s.duration}
       />
 
