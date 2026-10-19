@@ -3,20 +3,46 @@ import { supabase } from './supabaseClient';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
+const isVercelOrRemoteWithoutBackend =
+  typeof window !== 'undefined' &&
+  window.location.hostname !== 'localhost' &&
+  window.location.hostname !== '127.0.0.1' &&
+  API_BASE_URL.includes('localhost');
+
+let isBackendUnreachable = isVercelOrRemoteWithoutBackend;
+
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 4500,
+  timeout: 1800,
 });
 
-// Request interceptor to attach JWT token
+// Request interceptor to attach JWT token & short-circuit to Supabase on Vercel
 apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('vyugam_token');
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
+    }
+    if (isBackendUnreachable) {
+      config.adapter = async (cfg) => {
+        const res = await handleCloudFallback(cfg);
+        if (res && res.status >= 400) {
+          const err: any = new Error(res.data?.error || 'Request failed');
+          err.config = cfg;
+          err.response = { status: res.status, data: res.data, headers: {}, statusText: 'Error', config: cfg };
+          throw err;
+        }
+        return {
+          data: res?.data ?? { success: true },
+          status: res?.status ?? 200,
+          statusText: 'OK',
+          headers: {},
+          config: cfg,
+        };
+      };
     }
     return config;
   },
@@ -258,6 +284,7 @@ async function handleCloudFallback(config: any): Promise<{ data: any; status: nu
     const email = (body.email || '').trim().toLowerCase();
     const name = (body.name || '').trim();
     const password = body.password || '';
+    const cleanPhone = (body.phone || '').replace(/\D/g, '').replace(/^91(?=\d{10}$)/, '');
     if (!name || !email || !password) {
       return { status: 400, data: { success: false, error: 'Name, email, and password are required' } };
     }
@@ -265,6 +292,15 @@ async function handleCloudFallback(config: any): Promise<{ data: any; status: nu
       return {
         status: 400,
         data: { success: false, error: 'Only mail IDs with domain @sece.ac.in are allowed to sign up.' },
+      };
+    }
+    if (!cleanPhone || !/^[6-9]\d{9}$/.test(cleanPhone)) {
+      return {
+        status: 400,
+        data: {
+          success: false,
+          error: 'Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9.',
+        },
       };
     }
 
@@ -276,7 +312,7 @@ async function handleCloudFallback(config: any): Promise<{ data: any; status: nu
       role: body.role || 'student',
       college: body.college || 'Sri Eshwar College of Engineering',
       department: body.department || 'Department of AI & DS',
-      phone: body.phone || '',
+      phone: cleanPhone,
     };
 
     try {
@@ -489,27 +525,29 @@ async function handleCloudFallback(config: any): Promise<{ data: any; status: nu
   // 9. POST /teams/create
   if (method === 'post' && path === '/teams/create') {
     const savedUser = localStorage.getItem('vyugam_user');
-    const currentUser = savedUser ? JSON.parse(savedUser) : { id: 'user-local', name: 'Team Leader', email: 'leader@sece.ac.in' };
+    const currentUser = savedUser
+      ? JSON.parse(savedUser)
+      : { id: 'user-local', name: 'Team Leader', email: 'leader@sece.ac.in' };
     const teamId = 'team-' + Math.random().toString(36).substring(2, 10);
     const members = [
       {
-        id: 'mem-1',
+        id: 'mem-' + Math.random().toString(36).substring(2, 10),
         team_id: teamId,
         name: currentUser.name,
         email: currentUser.email,
         role_in_team: 'Team Leader',
         gender: 'Female',
-        college_id_no: 'SECE-LEAD',
+        college_id_no: '24AD001',
         year_of_study: '3rd Year',
       },
-      ...(body.members || []).map((m: any, idx: number) => ({
-        id: `mem-${idx + 2}`,
+      ...(body.members || []).map((m: any) => ({
+        id: 'mem-' + Math.random().toString(36).substring(2, 10),
         team_id: teamId,
         name: m.name,
         email: m.email,
         role_in_team: m.role_in_team || 'Developer',
         gender: m.gender || 'Female',
-        college_id_no: m.college_id_no || 'SECE-MEM',
+        college_id_no: m.college_id_no || '24AD001',
         year_of_study: m.year_of_study || '3rd Year',
       })),
     ];
@@ -527,18 +565,34 @@ async function handleCloudFallback(config: any): Promise<{ data: any; status: nu
       isCompliant: true,
     };
     localStorage.setItem(`vyugam_team_${currentUser.email}`, JSON.stringify(teamObj));
-    try {
-      await supabase.from('teams').upsert({
-        id: teamObj.id,
-        name: teamObj.name,
-        leader_id: teamObj.leader_id,
-        college: teamObj.college,
-        track: teamObj.track,
-        status: 'forming',
-      });
-    } catch {
-      // ignore
-    }
+
+    // Fire-and-forget background sync to Supabase for instant response
+    (async () => {
+      try {
+        await supabase.from('users').upsert({
+          id: currentUser.id,
+          name: currentUser.name,
+          email: currentUser.email,
+          password: 'hashed_password',
+          role: currentUser.role || 'student',
+          college: teamObj.college,
+          department: currentUser.department || 'Department of AI & DS',
+          phone: currentUser.phone || '',
+        });
+        await supabase.from('teams').upsert({
+          id: teamObj.id,
+          name: teamObj.name,
+          leader_id: teamObj.leader_id,
+          college: teamObj.college,
+          track: teamObj.track,
+          status: 'forming',
+        });
+        await supabase.from('team_members').upsert(members);
+      } catch {
+        // ignore
+      }
+    })();
+
     return { status: 201, data: { success: true, message: 'Team created successfully', teamId } };
   }
 
@@ -555,6 +609,7 @@ async function handleCloudFallback(config: any): Promise<{ data: any; status: nu
         team.problem_title = ps?.title || body.problemId;
         team.problem_category = ps?.category || 'AI & Machine Learning';
         localStorage.setItem(`vyugam_team_${currentUser.email}`, JSON.stringify(team));
+        supabase.from('teams').update({ problem_statement_id: body.problemId }).eq('id', team.id).then(() => {});
       }
     }
     return {
@@ -573,15 +628,23 @@ async function handleCloudFallback(config: any): Promise<{ data: any; status: nu
       if (localTeamRaw) {
         const team = JSON.parse(localTeamRaw);
         team.status = 'submitted';
-        team.submission = {
+        const subObj = {
           id: subId,
           team_id: team.id,
           problem_statement_id: team.problem_statement_id || 'VYUGAM-001',
-          ...body,
+          idea_title: body.idea_title,
+          executive_summary: body.executive_summary,
+          proposed_solution: body.proposed_solution,
+          tech_stack: body.tech_stack || '',
+          ppt_url: body.ppt_url || '',
+          github_url: body.github_url || '',
+          demo_video_url: body.demo_video_url || '',
           status: 'submitted',
           submitted_at: new Date().toISOString(),
         };
+        team.submission = subObj;
         localStorage.setItem(`vyugam_team_${currentUser.email}`, JSON.stringify(team));
+        supabase.from('submissions').upsert(subObj).then(() => {});
       }
     }
     return { status: 201, data: { success: true, message: 'Idea proposal submitted', submissionId: subId } };
@@ -631,8 +694,9 @@ async function handleCloudFallback(config: any): Promise<{ data: any; status: nu
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
-    // If backend server is unreachable (Network Error / timeout), use Cloud Supabase fallback
+    // If backend server is unreachable (Network Error / timeout), mark it and use Cloud Supabase fallback
     if (!error.response && error.config) {
+      isBackendUnreachable = true;
       const fallbackResponse = await handleCloudFallback(error.config);
       if (fallbackResponse) {
         if (fallbackResponse.status >= 400) {

@@ -46,6 +46,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, mode, onClose, onS
         setError(res.error || 'Login failed.');
       }
     } else {
+      const cleanPhone = phone.replace(/\D/g, '').replace(/^91(?=\d{10}$)/, '');
+      if (!/^[6-9]\d{9}$/.test(cleanPhone)) {
+        setError('Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9.');
+        setIsSubmitting(false);
+        return;
+      }
+
       const res = await register({
         name,
         email: normalizedEmail,
@@ -53,7 +60,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, mode, onClose, onS
         role,
         college: college || 'Sri Eshwar College of Engineering',
         department: 'AI & Data Science',
-        phone: phone.trim()
+        phone: cleanPhone
       });
       setIsSubmitting(false);
       if (res.success) {
@@ -133,10 +140,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, mode, onClose, onS
               <label className="block font-semibold mb-1 text-slate-700">Mobile Number *</label>
               <input
                 type="tel"
+                inputMode="numeric"
+                maxLength={10}
+                pattern="[6-9][0-9]{9}"
+                title="Enter a valid 10-digit mobile number starting with 6, 7, 8, or 9"
                 required
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="e.g. +91 98765 43210"
+                onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').replace(/^91(?=\d{10}$)/, '').slice(0, 10))}
+                placeholder="10-digit mobile number (e.g. 9876543210)"
                 className="w-full bg-slate-50 border border-slate-300 rounded-none px-3 py-2 text-slate-900 focus:outline-none focus:border-[#1755a7] focus:ring-1 focus:ring-[#1755a7]"
               />
             </div>

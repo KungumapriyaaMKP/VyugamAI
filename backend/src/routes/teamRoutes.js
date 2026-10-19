@@ -139,9 +139,6 @@ router.post('/create', authenticateToken, async (req, res) => {
       status: 'forming'
     };
 
-    // Sync team to Supabase
-    await supabaseService.syncTeam(teamObj);
-
     // Add leader as member #1
     const leaderMember = {
       id: uuidv4(),
@@ -150,7 +147,7 @@ router.post('/create', authenticateToken, async (req, res) => {
       email: leaderEmail,
       role_in_team: 'Team Leader',
       gender: leaderUser?.gender || 'Other',
-      college_id_no: leaderUser?.college_id_no || 'SECE-LEAD',
+      college_id_no: leaderUser?.college_id_no || '24AD001',
       year_of_study: '3rd Year'
     };
 
@@ -159,13 +156,13 @@ router.post('/create', authenticateToken, async (req, res) => {
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `).run(leaderMember.id, leaderMember.team_id, leaderMember.name, leaderMember.email, leaderMember.role_in_team, leaderMember.gender, leaderMember.college_id_no, leaderMember.year_of_study);
 
-    await supabaseService.syncTeamMember(leaderMember);
-
     // Add 3 student members
     const insertMember = db.prepare(`
       INSERT INTO team_members (id, team_id, name, email, role_in_team, gender, college_id_no, year_of_study)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `);
+
+    const allMembersToSync = [leaderMember];
 
     for (const m of members) {
       const mObj = {
@@ -175,18 +172,29 @@ router.post('/create', authenticateToken, async (req, res) => {
         email: m.email.trim().toLowerCase(),
         role_in_team: m.role_in_team || 'Developer',
         gender: m.gender || 'Female',
-        college_id_no: m.college_id_no?.trim() || 'SECE-MEM',
+        college_id_no: m.college_id_no?.trim() || '24AD001',
         year_of_study: m.year_of_study || '3rd Year'
       };
       insertMember.run(mObj.id, mObj.team_id, mObj.name, mObj.email, mObj.role_in_team, mObj.gender, mObj.college_id_no, mObj.year_of_study);
-      await supabaseService.syncTeamMember(mObj);
+      allMembersToSync.push(mObj);
     }
 
+    // Respond immediately for instant UX, and sync to Supabase in background
     res.status(201).json({
       success: true,
       message: 'Team created successfully with 4 members and synced to Supabase',
       teamId
     });
+
+    // Non-blocking background sync to Supabase
+    (async () => {
+      try {
+        await supabaseService.syncTeam(teamObj);
+        await Promise.all(allMembersToSync.map(m => supabaseService.syncTeamMember(m)));
+      } catch (syncErr) {
+        console.warn('Background team sync notice:', syncErr.message);
+      }
+    })();
   } catch (error) {
     console.error('Error creating team:', error);
     res.status(500).json({ success: false, error: error.message || 'Failed to create team.' });

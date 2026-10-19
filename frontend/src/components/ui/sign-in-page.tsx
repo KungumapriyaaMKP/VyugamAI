@@ -83,6 +83,14 @@ export function LoginPage({ initialMode = 'login', onNavigateHome, onNavigateSig
 
   const handleSignUpInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    if (name === 'phone') {
+      const digitsOnly = value.replace(/\D/g, '').replace(/^91(?=\d{10}$)/, '').slice(0, 10);
+      setSignUpData(prev => ({
+        ...prev,
+        phone: digitsOnly
+      }));
+      return;
+    }
     setSignUpData(prev => ({
       ...prev,
       [name]: value
@@ -165,8 +173,13 @@ export function LoginPage({ initialMode = 'login', onNavigateHome, onNavigateSig
       setErrorMsg('Only mail IDs with domain @sece.ac.in are allowed to register.');
       return;
     }
-    if (!signUpData.phone.trim()) {
+    const cleanPhone = signUpData.phone.replace(/\D/g, '').replace(/^91(?=\d{10}$)/, '');
+    if (!cleanPhone) {
       setErrorMsg('Mobile Number is required.');
+      return;
+    }
+    if (!/^[6-9]\d{9}$/.test(cleanPhone)) {
+      setErrorMsg('Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9.');
       return;
     }
     if (signUpData.password.length < 6) {
@@ -190,7 +203,7 @@ export function LoginPage({ initialMode = 'login', onNavigateHome, onNavigateSig
         role: signUpData.role,
         college: signUpData.college || 'Sri Eshwar College of Engineering',
         department: signUpData.department || 'Department of AI & DS',
-        phone: signUpData.phone || ''
+        phone: cleanPhone
       });
 
       if (res.success) {
@@ -623,13 +636,28 @@ export function LoginPage({ initialMode = 'login', onNavigateHome, onNavigateSig
                     <input
                       type="tel"
                       name="phone"
+                      inputMode="numeric"
+                      maxLength={10}
+                      pattern="[6-9][0-9]{9}"
+                      title="Enter a valid 10-digit mobile number starting with 6, 7, 8, or 9"
                       required
                       value={signUpData.phone}
                       onChange={handleSignUpInputChange}
-                      placeholder="e.g. +91 98765 43210"
-                      className="w-full pl-10 pr-4 py-2 bg-slate-50/70 hover:bg-white border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-4 focus:ring-purple-100 transition-all placeholder:text-slate-400"
+                      placeholder="10-digit mobile number (e.g. 9876543210)"
+                      className={`w-full pl-10 pr-4 py-2 bg-slate-50/70 hover:bg-white border rounded-xl text-sm text-slate-900 focus:outline-none focus:bg-white focus:ring-4 transition-all placeholder:text-slate-400 ${
+                        signUpData.phone.length > 0 && !/^[6-9]\d{9}$/.test(signUpData.phone)
+                          ? 'border-rose-300 focus:border-rose-500 focus:ring-rose-100'
+                          : 'border-slate-200 focus:border-purple-600 focus:ring-purple-100'
+                      }`}
                     />
                   </div>
+                  {signUpData.phone.length > 0 && !/^[6-9]\d{9}$/.test(signUpData.phone) && (
+                    <p className="text-[11px] text-rose-600 font-medium mt-1">
+                      {/^[0-5]/.test(signUpData.phone)
+                        ? 'Mobile number must start with 6, 7, 8, or 9.'
+                        : `Enter all 10 digits (${signUpData.phone.length}/10).`}
+                    </p>
+                  )}
                 </div>
 
                 {/* Department */}

@@ -34,7 +34,14 @@ router.post('/register', async (req, res) => {
     const userRole = role || 'student';
     const userCollege = college || 'Sri Eshwar College of Engineering';
     const userDept = department || 'AI & Data Science';
-    const userPhone = phone || '';
+    const cleanPhone = (phone || '').replace(/\D/g, '').replace(/^91(?=\d{10}$)/, '');
+    if (cleanPhone && !/^[6-9]\d{9}$/.test(cleanPhone)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9.'
+      });
+    }
+    const userPhone = cleanPhone;
 
     db.prepare(`
       INSERT INTO users (id, name, email, password, role, college, department, phone)

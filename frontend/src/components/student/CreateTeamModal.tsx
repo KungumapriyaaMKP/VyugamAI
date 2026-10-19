@@ -294,9 +294,9 @@ export const CreateTeamModal: React.FC<CreateTeamModalProps> = ({ isOpen, onClos
                     </select>
                     <input
                       type="text"
-                      placeholder="College Roll No (e.g. SECE23CS01)"
+                      placeholder="College Roll No (e.g. 24AD001)"
                       value={m.college_id_no}
-                      onChange={(e) => handleMemberChange(idx, 'college_id_no', e.target.value)}
+                      onChange={(e) => handleMemberChange(idx, 'college_id_no', e.target.value.toUpperCase())}
                       className="bg-white border border-slate-300 rounded-none px-2.5 py-1.5 text-slate-900 focus:outline-none focus:border-[#2e1065] focus:ring-1 focus:ring-[#2e1065]"
                     />
                   </div>
