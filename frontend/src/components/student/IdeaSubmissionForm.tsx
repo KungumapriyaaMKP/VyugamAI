@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Send, FileText, Video, Link, CheckCircle, Sparkles, Code2 } from 'lucide-react';
+import { Send, FileText, Video, Link, CheckCircle, Code2 } from 'lucide-react';
 import { apiClient } from '../../api/client';
 import type { Submission } from '../../types';
 
@@ -59,10 +59,6 @@ export const IdeaSubmissionForm: React.FC<IdeaSubmissionFormProps> = ({ existing
             <h3 className="text-lg font-bold text-[#0a2540]">Official Idea Proposal Form</h3>
             <p className="text-xs text-slate-500">Submit your architectural PPT, repository links, and solution summary</p>
           </div>
-        </div>
-        <div className="flex items-center gap-1 text-xs bg-blue-50 border border-blue-200 text-[#1755a7] px-3 py-1.5 rounded-lg font-mono font-bold">
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>VYUGAM AI RUBRIC VERIFIED</span>
         </div>
       </div>
 
