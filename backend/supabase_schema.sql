@@ -259,3 +259,22 @@ ON CONFLICT (id) DO UPDATE SET
   message = EXCLUDED.message,
   category = EXCLUDED.category,
   is_banner = EXCLUDED.is_banner;
+
+-- 8. SEED CONTACT MESSAGES
+INSERT INTO public.contact_messages (id, name, email, subject, message) VALUES
+('msg-001', 'Kungumapriyaa M', 'kungumapriyaa.m2024aids@sece.ac.in', 'Hackathon Team Inquiry', 'Looking forward to participating in Vyugam AI Hackathon 2026!')
+ON CONFLICT (id) DO NOTHING;
+
+-- ==============================================================================
+-- REFRESH POSTGRESQL ROW ESTIMATES (Updates "ROWS (ESTIMATED)" in Supabase UI)
+-- ==============================================================================
+ANALYZE public.users;
+ANALYZE public.problem_statements;
+ANALYZE public.teams;
+ANALYZE public.team_members;
+ANALYZE public.submissions;
+ANALYZE public.evaluations;
+ANALYZE public.announcements;
+ANALYZE public.contact_messages;
+ANALYZE public.password_resets;
+
