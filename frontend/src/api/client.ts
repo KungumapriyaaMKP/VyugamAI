@@ -314,10 +314,10 @@ async function handleCloudFallback(config: any): Promise<{ data: any; status: nu
       email === 'vyugamadmin@sece.ac.in'
     ) {
       if (name.toLowerCase() !== 'vyugamadmin' && email !== 'vyugamadmin') {
-        return { status: 401, data: { success: false, error: 'Invalid Admin name. Use VyugamAdmin.' } };
+        return { status: 401, data: { success: false, error: 'Invalid Admin credentials.' } };
       }
       if (password !== 'VyugamAI2026@password123') {
-        return { status: 401, data: { success: false, error: 'Invalid Admin password.' } };
+        return { status: 401, data: { success: false, error: 'Invalid Admin credentials.' } };
       }
       const adminUser = {
         id: 'user-admin-01',

@@ -63,15 +63,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, mode, onClose, onS
         setError(res.error || 'Login failed.');
       }
     } else {
-      // Admin role selected in Sign Up modal: only Name (VyugamAdmin) and Password (VyugamAI2026@password123)
+      // Admin role selected in Sign Up modal: only Admin Name and Password
       if (role === 'admin') {
-        if (name.trim().toLowerCase() !== 'vyugamadmin') {
-          setError('Invalid Admin Name. Please enter VyugamAdmin.');
-          setIsSubmitting(false);
-          return;
-        }
-        if (password !== 'VyugamAI2026@password123') {
-          setError('Invalid Admin Password.');
+        if (name.trim().toLowerCase() !== 'vyugamadmin' || password !== 'VyugamAI2026@password123') {
+          setError('Invalid Admin credentials.');
           setIsSubmitting(false);
           return;
         }
@@ -147,7 +142,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, mode, onClose, onS
         </div>
 
         {/* Modal Body */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4 text-xs text-slate-700">
+        <form onSubmit={handleSubmit} className="p-6 space-y-4 text-xs text-slate-700" autoComplete="off">
           {error && (
             <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-none">
               {error}
@@ -168,6 +163,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, mode, onClose, onS
                     type="button"
                     onClick={() => {
                       setError(null);
+                      setName('');
+                      setPassword('');
                       setRole(item.r as UserRole);
                     }}
                     className={`p-2 rounded-none border flex flex-col items-center gap-1 font-semibold transition-all cursor-pointer ${
@@ -191,10 +188,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, mode, onClose, onS
               </label>
               <input
                 type="text"
+                autoComplete="off"
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder={role === 'admin' ? 'VyugamAdmin' : 'Arjun Vikram'}
+                placeholder={role === 'admin' ? 'Enter admin name' : 'Arjun Vikram'}
                 className="w-full bg-slate-50 border border-slate-300 rounded-none px-3 py-2 text-slate-900 focus:outline-none focus:border-[#1755a7] focus:ring-1 focus:ring-[#1755a7]"
               />
             </div>
@@ -203,14 +201,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, mode, onClose, onS
           {(mode === 'login' || (mode === 'register' && role !== 'admin')) && (
             <div>
               <label className="block font-semibold mb-1 text-slate-700">
-                {mode === 'login' ? 'Email Address / Admin Name *' : 'Email Address * (@sece.ac.in)'}
+                {mode === 'login' ? 'Email Address *' : 'Email Address * (@sece.ac.in)'}
               </label>
               <input
                 type={mode === 'login' ? 'text' : 'email'}
+                autoComplete="off"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder={mode === 'login' ? 'yourname@sece.ac.in or VyugamAdmin' : 'yourname@sece.ac.in'}
+                placeholder="yourname@sece.ac.in"
                 className="w-full bg-slate-50 border border-slate-300 rounded-none px-3 py-2 text-slate-900 focus:outline-none focus:border-[#1755a7] focus:ring-1 focus:ring-[#1755a7]"
               />
             </div>

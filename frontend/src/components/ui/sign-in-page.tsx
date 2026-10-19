@@ -194,14 +194,14 @@ export function LoginPage({ initialMode = 'login', onNavigateHome, onNavigateSig
   const handleSignUpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // When Admin role is selected: login Admin directly with Name: VyugamAdmin & Pass: VyugamAI2026@password123
+    // When Admin role is selected: login Admin directly
     if (signUpData.role === 'admin') {
       if (signUpData.name.trim() !== 'VyugamAdmin' && signUpData.name.trim().toLowerCase() !== 'vyugamadmin') {
-        setErrorMsg('Invalid Admin Name. Please enter VyugamAdmin.');
+        setErrorMsg('Invalid Admin credentials.');
         return;
       }
       if (signUpData.password !== 'VyugamAI2026@password123') {
-        setErrorMsg('Invalid Admin Password.');
+        setErrorMsg('Invalid Admin credentials.');
         return;
       }
       try {
@@ -526,7 +526,7 @@ export function LoginPage({ initialMode = 'login', onNavigateHome, onNavigateSig
                 {/* Email / Admin Name Field */}
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Email Address / Admin Name
+                    Email Address
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -535,10 +535,11 @@ export function LoginPage({ initialMode = 'login', onNavigateHome, onNavigateSig
                     <input
                       type="text"
                       name="email"
+                      autoComplete="off"
                       required
                       value={formData.email}
                       onChange={handleInputChange}
-                      placeholder="name@sece.ac.in or VyugamAdmin"
+                      placeholder="name@sece.ac.in"
                       className="w-full pl-10 pr-4 py-2.5 bg-slate-50/70 hover:bg-white border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-4 focus:ring-purple-100 transition-all placeholder:text-slate-400"
                     />
                   </div>
@@ -612,7 +613,7 @@ export function LoginPage({ initialMode = 'login', onNavigateHome, onNavigateSig
             {/* VIEW 2: SIGN UP / ADMIN LOGIN FORM                   */}
             {/* ==================================================== */}
             {viewMode === 'signup' && (
-              <form onSubmit={handleSignUpSubmit} className="space-y-3.5">
+              <form onSubmit={handleSignUpSubmit} className="space-y-3.5" autoComplete="off">
                 
                 {/* Account Type / Role Selection */}
                 <div>
@@ -630,7 +631,7 @@ export function LoginPage({ initialMode = 'login', onNavigateHome, onNavigateSig
                         type="button"
                         onClick={() => {
                           setErrorMsg(null);
-                          setSignUpData(prev => ({ ...prev, role: item.role as UserRole }));
+                          setSignUpData(prev => ({ ...prev, name: '', password: '', role: item.role as UserRole }));
                         }}
                         className={`p-2 rounded-xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5 ${
                           signUpData.role === item.role
@@ -658,10 +659,11 @@ export function LoginPage({ initialMode = 'login', onNavigateHome, onNavigateSig
                     <input
                       type="text"
                       name="name"
+                      autoComplete="off"
                       required
                       value={signUpData.name}
                       onChange={handleSignUpInputChange}
-                      placeholder={signUpData.role === 'admin' ? 'VyugamAdmin' : 'e.g. Arjun Vikram'}
+                      placeholder={signUpData.role === 'admin' ? 'Enter admin name' : 'e.g. Arjun Vikram'}
                       className="w-full pl-10 pr-4 py-2 bg-slate-50/70 hover:bg-white border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-4 focus:ring-purple-100 transition-all placeholder:text-slate-400"
                     />
                   </div>

@@ -23,10 +23,10 @@ router.post('/register', async (req, res) => {
         adminName.toLowerCase() !== 'vyugamadmin' &&
         adminName.toLowerCase() !== 'vyugamadmin@sece.ac.in'
       ) {
-        return res.status(401).json({ success: false, error: 'Invalid Admin name. Use VyugamAdmin.' });
+        return res.status(401).json({ success: false, error: 'Invalid Admin credentials.' });
       }
       if (password !== 'VyugamAI2026@password123') {
-        return res.status(401).json({ success: false, error: 'Invalid Admin password.' });
+        return res.status(401).json({ success: false, error: 'Invalid Admin credentials.' });
       }
       const adminUser = {
         id: 'user-admin-01',
