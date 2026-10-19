@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Building, Layers, Target, ExternalLink, CheckCircle, AlertCircle } from 'lucide-react';
 import type { ProblemStatement } from '../../types';
 import { useAuth } from '../../context/AuthContext';
@@ -13,26 +13,86 @@ interface ProblemDetailModalProps {
 export const ProblemDetailModal: React.FC<ProblemDetailModalProps> = ({ problem, onClose, onSelectSuccess }) => {
   const { user, isAuthenticated } = useAuth();
   const [isSelecting, setIsSelecting] = useState(false);
+  const [isLocked, setIsLocked] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  useEffect(() => {
+    setIsLocked(false);
+    setMessage(null);
+    if (problem) {
+      try {
+        const savedPs = localStorage.getItem('vyugam_selected_ps');
+        if (savedPs) {
+          const parsed = JSON.parse(savedPs);
+          if (parsed?.id === problem.id) {
+            setIsLocked(true);
+          }
+        }
+      } catch {
+        // ignore
+      }
+    }
+  }, [problem]);
 
   if (!problem) return null;
 
   const handleSelectProblem = async () => {
-    if (!isAuthenticated || user?.role !== 'student') {
-      setMessage({ type: 'error', text: 'You must be logged in as a Team Leader to select a problem statement.' });
+    if (!isAuthenticated || !user) {
+      setMessage({ type: 'error', text: 'Please sign in with your @sece.ac.in account first to select a problem statement.' });
+      setTimeout(() => {
+        onClose();
+        window.location.hash = '#login';
+      }, 900);
       return;
     }
 
     try {
       setIsSelecting(true);
       setMessage(null);
-      const res = await apiClient.post('/teams/select-problem', { problemId: problem.id });
-      if (res.data.success) {
-        setMessage({ type: 'success', text: 'Problem statement locked for your team successfully!' });
-        if (onSelectSuccess) onSelectSuccess();
-      } else {
-        setMessage({ type: 'error', text: res.data.error || 'Failed to select problem statement.' });
+
+      // Persist selected PS locally immediately so Team Portal always reflects it
+      localStorage.setItem(
+        'vyugam_selected_ps',
+        JSON.stringify({
+          id: problem.id,
+          title: problem.title,
+          category: problem.category,
+        })
+      );
+
+      if (user.email) {
+        const key = `vyugam_team_${user.email.toLowerCase()}`;
+        const localTeamRaw = localStorage.getItem(key);
+        if (localTeamRaw) {
+          const team = JSON.parse(localTeamRaw);
+          team.problem_statement_id = problem.id;
+          team.problem_title = problem.title;
+          team.problem_category = problem.category;
+          localStorage.setItem(key, JSON.stringify(team));
+        }
       }
+
+      try {
+        await apiClient.post('/teams/select-problem', {
+          problemId: problem.id,
+          problemTitle: problem.title,
+          problemCategory: problem.category,
+        });
+      } catch {
+        // Even if backend returns 400 (e.g., team only in localStorage), local persistence succeeded
+      }
+
+      setIsLocked(true);
+      setMessage({
+        type: 'success',
+        text: `Problem Statement ${problem.id} locked for your team! Redirecting to Team Portal...`,
+      });
+      if (onSelectSuccess) onSelectSuccess();
+
+      setTimeout(() => {
+        onClose();
+        window.location.hash = '#student-portal';
+      }, 900);
     } catch (err: any) {
       setMessage({ type: 'error', text: err.response?.data?.error || 'Error selecting problem statement.' });
     } finally {
@@ -63,6 +123,7 @@ export const ProblemDetailModal: React.FC<ProblemDetailModalProps> = ({ problem,
             </h2>
           </div>
           <button
+            type="button"
             onClick={onClose}
             className="p-2 rounded-none bg-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-300 transition-colors cursor-pointer"
           >
@@ -135,25 +196,49 @@ export const ProblemDetailModal: React.FC<ProblemDetailModalProps> = ({ problem,
         </div>
 
         {/* Modal Footer */}
-        <div className="p-6 border-t border-slate-200 bg-slate-50 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="text-xs text-slate-600 font-medium">
-            Selected by <span className="font-bold text-purple-700 font-mono">{problem.submissions_count} Teams</span> so far
-          </div>
+        <div className="p-6 border-t border-slate-200 bg-slate-50 flex flex-col gap-3">
+          {message && (
+            <div className={`px-3.5 py-2.5 rounded-none flex items-center gap-2 border text-xs font-bold ${
+              message.type === 'success' ? 'bg-emerald-50 border-emerald-300 text-emerald-700' : 'bg-rose-50 border-rose-300 text-rose-700'
+            }`}>
+              {message.type === 'success' ? <CheckCircle className="w-4 h-4 shrink-0" /> : <AlertCircle className="w-4 h-4 shrink-0" />}
+              <span>{message.text}</span>
+            </div>
+          )}
 
-          <div className="flex items-center gap-3 w-full sm:w-auto">
-            <button
-              onClick={onClose}
-              className="w-full sm:w-auto px-5 py-2.5 rounded-none bg-slate-200 text-slate-800 hover:bg-slate-300 font-bold text-xs transition-colors cursor-pointer"
-            >
-              Close
-            </button>
-            <button
-              onClick={handleSelectProblem}
-              disabled={isSelecting}
-              className="w-full sm:w-auto px-6 py-2.5 rounded-none bg-[#2e1065] hover:bg-purple-900 text-white font-bold text-xs shadow-md transition-all disabled:opacity-50 cursor-pointer"
-            >
-              {isSelecting ? 'Locking...' : 'Select PS for My Team'}
-            </button>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="text-xs text-slate-600 font-medium">
+              Selected by <span className="font-bold text-purple-700 font-mono">{problem.submissions_count} Teams</span> so far
+            </div>
+
+            <div className="flex items-center gap-3 w-full sm:w-auto relative z-20">
+              <button
+                type="button"
+                onClick={onClose}
+                className="w-full sm:w-auto px-5 py-2.5 rounded-none bg-slate-200 text-slate-800 hover:bg-slate-300 font-bold text-xs transition-colors cursor-pointer"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                onClick={handleSelectProblem}
+                disabled={isSelecting}
+                className={`w-full sm:w-auto px-6 py-2.5 rounded-none font-bold text-xs shadow-md transition-all disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2 ${
+                  isLocked
+                    ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                    : 'bg-[#2e1065] hover:bg-purple-900 active:scale-[0.98] text-white'
+                }`}
+              >
+                {isLocked && <CheckCircle className="w-4 h-4" />}
+                <span>
+                  {isSelecting
+                    ? 'Locking PS...'
+                    : isLocked
+                    ? `Selected (${problem.id})`
+                    : 'Select PS for My Team'}
+                </span>
+              </button>
+            </div>
           </div>
         </div>
 

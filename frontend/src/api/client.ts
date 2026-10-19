@@ -482,9 +482,27 @@ async function handleCloudFallback(config: any): Promise<{ data: any; status: nu
     if (!currentUser) {
       return { status: 200, data: { success: true, hasTeam: false, team: null } };
     }
-    const localTeamRaw = localStorage.getItem(`vyugam_team_${currentUser.email}`);
+    const savedPsRaw = localStorage.getItem('vyugam_selected_ps');
+    const savedPs = savedPsRaw
+      ? (() => {
+          try {
+            return JSON.parse(savedPsRaw);
+          } catch {
+            return null;
+          }
+        })()
+      : null;
+
+    const localTeamRaw =
+      localStorage.getItem(`vyugam_team_${currentUser.email.toLowerCase()}`) ||
+      localStorage.getItem(`vyugam_team_${currentUser.email}`);
     if (localTeamRaw) {
       const team = JSON.parse(localTeamRaw);
+      if (savedPs?.id) {
+        team.problem_statement_id = savedPs.id;
+        team.problem_title = savedPs.title || team.problem_title || savedPs.id;
+        team.problem_category = savedPs.category || team.problem_category || 'AI & Machine Learning';
+      }
       return { status: 200, data: { success: true, hasTeam: true, team } };
     }
     try {
@@ -500,6 +518,7 @@ async function handleCloudFallback(config: any): Promise<{ data: any; status: nu
           .select('*')
           .eq('team_id', team.id)
           .maybeSingle();
+        const psMatch = FALLBACK_PROBLEMS.find((p) => p.id === (savedPs?.id || team.problem_statement_id));
         return {
           status: 200,
           data: {
@@ -507,6 +526,9 @@ async function handleCloudFallback(config: any): Promise<{ data: any; status: nu
             hasTeam: true,
             team: {
               ...team,
+              problem_statement_id: savedPs?.id || team.problem_statement_id || null,
+              problem_title: savedPs?.title || psMatch?.title || null,
+              problem_category: savedPs?.category || psMatch?.category || null,
               leader_name: currentUser.name,
               members: members || [],
               submission: submission || null,
@@ -528,6 +550,17 @@ async function handleCloudFallback(config: any): Promise<{ data: any; status: nu
     const currentUser = savedUser
       ? JSON.parse(savedUser)
       : { id: 'user-local', name: 'Team Leader', email: 'leader@sece.ac.in' };
+    const savedPsRaw = localStorage.getItem('vyugam_selected_ps');
+    const savedPs = savedPsRaw
+      ? (() => {
+          try {
+            return JSON.parse(savedPsRaw);
+          } catch {
+            return null;
+          }
+        })()
+      : null;
+
     const teamId = 'team-' + Math.random().toString(36).substring(2, 10);
     const members = [
       {
@@ -551,40 +584,55 @@ async function handleCloudFallback(config: any): Promise<{ data: any; status: nu
         year_of_study: m.year_of_study || '3rd Year',
       })),
     ];
-    const teamObj = {
+    const teamObj: any = {
       id: teamId,
       name: body.name,
       leader_id: currentUser.id,
       leader_name: currentUser.name,
       college: body.college || 'Sri Eshwar College of Engineering',
       track: body.track || 'Software',
+      problem_statement_id: savedPs?.id || null,
+      problem_title: savedPs?.title || null,
+      problem_category: savedPs?.category || null,
       status: 'forming',
       members,
       submission: null,
       femaleCount: members.filter((m) => m.gender?.toLowerCase() === 'female').length,
       isCompliant: true,
     };
+    localStorage.setItem(`vyugam_team_${currentUser.email.toLowerCase()}`, JSON.stringify(teamObj));
     localStorage.setItem(`vyugam_team_${currentUser.email}`, JSON.stringify(teamObj));
 
     // Fire-and-forget background sync to Supabase for instant response
     (async () => {
       try {
-        await supabase.from('users').upsert({
-          id: currentUser.id,
-          name: currentUser.name,
-          email: currentUser.email,
-          password: 'hashed_password',
-          role: currentUser.role || 'student',
-          college: teamObj.college,
-          department: currentUser.department || 'Department of AI & DS',
-          phone: currentUser.phone || '',
-        });
+        let leaderId = currentUser.id;
+        const { data: existingUser } = await supabase
+          .from('users')
+          .select('id')
+          .ilike('email', currentUser.email)
+          .maybeSingle();
+        if (existingUser?.id) {
+          leaderId = existingUser.id;
+        } else {
+          await supabase.from('users').upsert({
+            id: currentUser.id,
+            name: currentUser.name,
+            email: currentUser.email,
+            password: 'hashed_password',
+            role: currentUser.role || 'student',
+            college: teamObj.college,
+            department: currentUser.department || 'Department of AI & DS',
+            phone: currentUser.phone || '',
+          });
+        }
         await supabase.from('teams').upsert({
           id: teamObj.id,
           name: teamObj.name,
-          leader_id: teamObj.leader_id,
+          leader_id: leaderId,
           college: teamObj.college,
           track: teamObj.track,
+          problem_statement_id: teamObj.problem_statement_id,
           status: 'forming',
         });
         await supabase.from('team_members').upsert(members);
@@ -601,13 +649,29 @@ async function handleCloudFallback(config: any): Promise<{ data: any; status: nu
     const savedUser = localStorage.getItem('vyugam_user');
     const currentUser = savedUser ? JSON.parse(savedUser) : null;
     const ps = FALLBACK_PROBLEMS.find((p) => p.id === body.problemId);
-    if (currentUser) {
-      const localTeamRaw = localStorage.getItem(`vyugam_team_${currentUser.email}`);
+    const resolvedTitle = body.problemTitle || ps?.title || body.problemId;
+    const resolvedCategory = body.problemCategory || ps?.category || 'AI & Machine Learning';
+
+    localStorage.setItem(
+      'vyugam_selected_ps',
+      JSON.stringify({
+        id: body.problemId,
+        title: resolvedTitle,
+        category: resolvedCategory,
+      })
+    );
+
+    if (currentUser?.email) {
+      const emailKey = currentUser.email.toLowerCase();
+      const localTeamRaw =
+        localStorage.getItem(`vyugam_team_${emailKey}`) ||
+        localStorage.getItem(`vyugam_team_${currentUser.email}`);
       if (localTeamRaw) {
         const team = JSON.parse(localTeamRaw);
         team.problem_statement_id = body.problemId;
-        team.problem_title = ps?.title || body.problemId;
-        team.problem_category = ps?.category || 'AI & Machine Learning';
+        team.problem_title = resolvedTitle;
+        team.problem_category = resolvedCategory;
+        localStorage.setItem(`vyugam_team_${emailKey}`, JSON.stringify(team));
         localStorage.setItem(`vyugam_team_${currentUser.email}`, JSON.stringify(team));
         supabase.from('teams').update({ problem_statement_id: body.problemId }).eq('id', team.id).then(() => {});
       }

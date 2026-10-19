@@ -19,10 +19,44 @@ export const StudentDashboard: React.FC = () => {
     try {
       setIsLoading(true);
       const res = await apiClient.get('/teams/my-team');
-      if (res.data.success) {
-        setHasTeam(res.data.hasTeam);
-        setTeamData(res.data.team);
+      let resolvedHasTeam = Boolean(res.data?.hasTeam);
+      let resolvedTeam: any = res.data?.team || null;
+
+      // Also check localStorage team fallback for the logged-in user
+      if (!resolvedTeam && user?.email) {
+        const localRaw =
+          localStorage.getItem(`vyugam_team_${user.email.toLowerCase()}`) ||
+          localStorage.getItem(`vyugam_team_${user.email}`);
+        if (localRaw) {
+          try {
+            resolvedTeam = JSON.parse(localRaw);
+            resolvedHasTeam = true;
+          } catch {
+            // ignore
+          }
+        }
       }
+
+      // Always merge any locked problem statement from localStorage so PS selection reflects immediately
+      const savedPsRaw = localStorage.getItem('vyugam_selected_ps');
+      if (resolvedTeam && savedPsRaw) {
+        try {
+          const savedPs = JSON.parse(savedPsRaw);
+          if (savedPs?.id) {
+            resolvedTeam = {
+              ...resolvedTeam,
+              problem_statement_id: savedPs.id,
+              problem_title: savedPs.title || resolvedTeam.problem_title || savedPs.id,
+              problem_category: savedPs.category || resolvedTeam.problem_category || 'AI & Machine Learning',
+            };
+          }
+        } catch {
+          // ignore
+        }
+      }
+
+      setHasTeam(resolvedHasTeam);
+      setTeamData(resolvedTeam);
     } catch (err) {
       console.error('Error fetching team:', err);
     } finally {
@@ -32,7 +66,7 @@ export const StudentDashboard: React.FC = () => {
 
   useEffect(() => {
     fetchTeam();
-  }, []);
+  }, [user?.email]);
 
   const leaderDisplayName = (() => {
     const leaderMember = teamData?.members?.find((m: any) => 
@@ -175,13 +209,21 @@ export const StudentDashboard: React.FC = () => {
         </div>
 
         {/* Selected Problem Statement Indicator */}
-        <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 max-w-md w-full relative z-10">
+        <div
+          onClick={() => {
+            window.location.hash = '#problems';
+          }}
+          className="bg-slate-50 hover:bg-blue-50/50 p-4 rounded-2xl border border-slate-200 hover:border-blue-300 max-w-md w-full relative z-10 cursor-pointer transition-all group"
+          title="Click to browse or change Problem Statement"
+        >
           <div className="text-[11px] uppercase font-bold text-slate-500 mb-1 flex items-center justify-between">
             <span>Selected Problem Statement</span>
-            <span className="text-[#1755a7] font-mono font-bold">{teamData?.problem_statement_id || 'Not Selected'}</span>
+            <span className={`font-mono font-bold px-2 py-0.5 rounded ${teamData?.problem_statement_id ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'text-[#1755a7]'}`}>
+              {teamData?.problem_statement_id || 'Select PS →'}
+            </span>
           </div>
-          <p className="text-xs font-semibold text-slate-800 truncate">
-            {teamData?.problem_title || 'No problem statement selected yet. Explore PS portal to lock one.'}
+          <p className="text-xs font-semibold text-slate-800 group-hover:text-[#1755a7] truncate transition-colors">
+            {teamData?.problem_title || 'No problem statement selected yet. Click here to lock one.'}
           </p>
         </div>
       </div>

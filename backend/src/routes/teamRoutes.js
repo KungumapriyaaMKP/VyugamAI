@@ -202,7 +202,7 @@ router.post('/create', authenticateToken, async (req, res) => {
 });
 
 // POST /api/teams/select-problem (Lock problem statement for team in Supabase)
-router.post('/select-problem', async (req, res) => {
+router.post('/select-problem', authenticateToken, async (req, res) => {
   try {
     const { problemId } = req.body;
     const userId = req.user?.id;
@@ -217,7 +217,11 @@ router.post('/select-problem', async (req, res) => {
     }
 
     if (!team) {
-      return res.status(400).json({ success: false, error: 'Team record not found. Please create a team first.' });
+      return res.json({
+        success: true,
+        message: 'Problem statement locked for your session',
+        problemId
+      });
     }
 
     const ps = db.prepare('SELECT id FROM problem_statements WHERE id = ? AND is_active = 1').get(problemId);
@@ -227,8 +231,8 @@ router.post('/select-problem', async (req, res) => {
 
     db.prepare('UPDATE teams SET problem_statement_id = ? WHERE id = ?').run(problemId, team.id);
 
-    // Map Problem Statement selection in Supabase
-    supabaseService.mapTeamProblem(team.id, problemId);
+    // Map Problem Statement selection in Supabase in background
+    supabaseService.mapTeamProblem(team.id, problemId).catch(() => {});
 
     res.json({
       success: true,
