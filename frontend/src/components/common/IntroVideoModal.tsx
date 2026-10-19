@@ -11,6 +11,22 @@ export const IntroVideoModal: React.FC<IntroVideoModalProps> = ({ isOpen, onClos
   const [isExiting, setIsExiting] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [isMobileView, setIsMobileView] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(max-width: 767px)').matches;
+  });
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 767px)');
+    const handleMediaChange = (e: MediaQueryListEvent) => {
+      setIsMobileView(e.matches);
+    };
+    setIsMobileView(mediaQuery.matches);
+    mediaQuery.addEventListener('change', handleMediaChange);
+    return () => mediaQuery.removeEventListener('change', handleMediaChange);
+  }, []);
+
+  const videoSrc = isMobileView ? '/intro-video-vertical-6.mp4' : '/intro-video.mp4';
 
   useEffect(() => {
     if (!isOpen) {
@@ -91,7 +107,7 @@ export const IntroVideoModal: React.FC<IntroVideoModalProps> = ({ isOpen, onClos
       window.removeEventListener('keydown', handleKeyDown);
       events.forEach((evt) => window.removeEventListener(evt, unlockAudio));
     };
-  }, [isOpen]);
+  }, [isOpen, videoSrc]);
 
   const handleTimeUpdate = () => {
     if (videoRef.current && videoRef.current.duration) {
@@ -140,10 +156,11 @@ export const IntroVideoModal: React.FC<IntroVideoModalProps> = ({ isOpen, onClos
         isExiting ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
     >
-      {/* Video Player */}
+      {/* Video Player: Vertical video for mobile (< 768px), Landscape video for desktop */}
       <video
+        key={videoSrc}
         ref={videoRef}
-        src="/intro-video.mp4"
+        src={videoSrc}
         className="w-full h-full object-cover"
         playsInline
         autoPlay
