@@ -12,6 +12,44 @@ router.post('/register', async (req, res) => {
   try {
     const { name, email, password, role, college, department, phone } = req.body;
 
+    // Direct Admin Login via Admin tab (Name: VyugamAdmin, Pass: VyugamAI2026@password123)
+    if (
+      role === 'admin' ||
+      (name && name.trim().toLowerCase() === 'vyugamadmin') ||
+      (email && ['vyugamadmin', 'vyugamadmin@sece.ac.in'].includes(email.trim().toLowerCase()))
+    ) {
+      const adminName = (name || email || '').trim();
+      if (
+        adminName.toLowerCase() !== 'vyugamadmin' &&
+        adminName.toLowerCase() !== 'vyugamadmin@sece.ac.in'
+      ) {
+        return res.status(401).json({ success: false, error: 'Invalid Admin name. Use VyugamAdmin.' });
+      }
+      if (password !== 'VyugamAI2026@password123') {
+        return res.status(401).json({ success: false, error: 'Invalid Admin password.' });
+      }
+      const adminUser = {
+        id: 'user-admin-01',
+        name: 'VyugamAdmin',
+        email: 'vyugamadmin@sece.ac.in',
+        role: 'admin',
+        college: 'Sri Eshwar College of Engineering',
+        department: '',
+        phone: ''
+      };
+      const token = jwt.sign(
+        { id: adminUser.id, name: adminUser.name, email: adminUser.email, role: 'admin' },
+        JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+      return res.status(200).json({
+        success: true,
+        message: 'Admin logged in successfully',
+        token,
+        user: adminUser
+      });
+    }
+
     if (!name || !email || !password) {
       return res.status(400).json({ success: false, error: 'Name, email, and password are required' });
     }
@@ -110,10 +148,38 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ success: false, error: 'Email and password are required' });
+      return res.status(400).json({ success: false, error: 'Username/Email and password are required' });
     }
 
     const normalizedEmail = email.trim().toLowerCase();
+
+    // Direct Admin Login (Name: VyugamAdmin, Pass: VyugamAI2026@password123)
+    if (normalizedEmail === 'vyugamadmin' || normalizedEmail === 'vyugamadmin@sece.ac.in') {
+      if (password !== 'VyugamAI2026@password123') {
+        return res.status(401).json({ success: false, error: 'Invalid Admin password.' });
+      }
+      const adminUser = {
+        id: 'user-admin-01',
+        name: 'VyugamAdmin',
+        email: 'vyugamadmin@sece.ac.in',
+        role: 'admin',
+        college: 'Sri Eshwar College of Engineering',
+        department: '',
+        phone: ''
+      };
+      const token = jwt.sign(
+        { id: adminUser.id, name: adminUser.name, email: adminUser.email, role: 'admin' },
+        JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+      return res.json({
+        success: true,
+        message: 'Admin login successful',
+        token,
+        user: adminUser
+      });
+    }
+
     if (!normalizedEmail.endsWith('@sece.ac.in')) {
       return res.status(400).json({
         success: false,

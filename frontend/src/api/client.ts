@@ -222,7 +222,30 @@ async function handleCloudFallback(config: any): Promise<{ data: any; status: nu
     const email = (body.email || '').trim().toLowerCase();
     const password = body.password || '';
     if (!email || !password) {
-      return { status: 400, data: { success: false, error: 'Email and password are required' } };
+      return { status: 400, data: { success: false, error: 'Username/Email and password are required' } };
+    }
+    if (email === 'vyugamadmin' || email === 'vyugamadmin@sece.ac.in') {
+      if (password !== 'VyugamAI2026@password123') {
+        return { status: 401, data: { success: false, error: 'Invalid Admin password.' } };
+      }
+      const adminUser = {
+        id: 'user-admin-01',
+        name: 'VyugamAdmin',
+        email: 'vyugamadmin@sece.ac.in',
+        role: 'admin',
+        college: 'Sri Eshwar College of Engineering',
+        department: '',
+        phone: '',
+      };
+      return {
+        status: 200,
+        data: {
+          success: true,
+          message: 'Admin login successful',
+          token: `sb-jwt-admin-${Date.now()}`,
+          user: adminUser,
+        },
+      };
     }
     if (!email.endsWith('@sece.ac.in')) {
       return {
@@ -284,6 +307,37 @@ async function handleCloudFallback(config: any): Promise<{ data: any; status: nu
     const email = (body.email || '').trim().toLowerCase();
     const name = (body.name || '').trim();
     const password = body.password || '';
+    if (
+      body.role === 'admin' ||
+      name.toLowerCase() === 'vyugamadmin' ||
+      email === 'vyugamadmin' ||
+      email === 'vyugamadmin@sece.ac.in'
+    ) {
+      if (name.toLowerCase() !== 'vyugamadmin' && email !== 'vyugamadmin') {
+        return { status: 401, data: { success: false, error: 'Invalid Admin name. Use VyugamAdmin.' } };
+      }
+      if (password !== 'VyugamAI2026@password123') {
+        return { status: 401, data: { success: false, error: 'Invalid Admin password.' } };
+      }
+      const adminUser = {
+        id: 'user-admin-01',
+        name: 'VyugamAdmin',
+        email: 'vyugamadmin@sece.ac.in',
+        role: 'admin',
+        college: 'Sri Eshwar College of Engineering',
+        department: '',
+        phone: '',
+      };
+      return {
+        status: 200,
+        data: {
+          success: true,
+          message: 'Admin logged in successfully',
+          token: `sb-jwt-admin-${Date.now()}`,
+          user: adminUser,
+        },
+      };
+    }
     const cleanPhone = (body.phone || '').replace(/\D/g, '').replace(/^91(?=\d{10}$)/, '');
     if (!name || !email || !password) {
       return { status: 400, data: { success: false, error: 'Name, email, and password are required' } };

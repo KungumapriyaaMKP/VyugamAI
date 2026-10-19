@@ -15,12 +15,22 @@ import {
   Award,
   Send,
   Sparkles,
+  Shield,
+  Lock,
+  User,
 } from 'lucide-react';
 import { apiClient } from '../../api/client';
+import { useAuth } from '../../context/AuthContext';
 import { PencilLoader } from '../ui/loader-1';
 import { ManageProblemsModal } from './ManageProblemsModal';
 
 export const AdminDashboard: React.FC = () => {
+  const { user, login } = useAuth();
+  const [adminName, setAdminName] = useState('');
+  const [adminPass, setAdminPass] = useState('');
+  const [adminLoginErr, setAdminLoginErr] = useState<string | null>(null);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+
   const [data, setData] = useState<any>(null);
   const [problems, setProblems] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -303,6 +313,96 @@ export const AdminDashboard: React.FC = () => {
     document.body.removeChild(link);
     showToast('Exported Registered Teams CSV!');
   };
+
+  const handleAdminGateLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (adminName.trim().toLowerCase() !== 'vyugamadmin') {
+      setAdminLoginErr('Invalid Admin Name. Please enter VyugamAdmin.');
+      return;
+    }
+    if (adminPass !== 'VyugamAI2026@password123') {
+      setAdminLoginErr('Invalid Admin Password.');
+      return;
+    }
+    try {
+      setIsLoggingIn(true);
+      setAdminLoginErr(null);
+      const res = await login('VyugamAdmin', adminPass);
+      if (res.success) {
+        fetchAdminData();
+      } else {
+        setAdminLoginErr(res.error || 'Admin login failed.');
+      }
+    } catch {
+      setAdminLoginErr('Failed to authenticate Admin.');
+    } finally {
+      setIsLoggingIn(false);
+    }
+  };
+
+  if (user?.role !== 'admin') {
+    return (
+      <div className="py-16 max-w-md mx-auto px-4">
+        <div className="bg-white p-8 rounded-2xl border border-slate-200 space-y-6 shadow-lg">
+          <div className="text-center space-y-2">
+            <div className="w-14 h-14 bg-purple-50 border border-purple-200 rounded-2xl flex items-center justify-center mx-auto text-[#2e1065]">
+              <Shield className="w-7 h-7" />
+            </div>
+            <h2 className="text-2xl font-black text-slate-900 font-serif">Admin Control Center</h2>
+            <p className="text-xs text-slate-500">
+              Sign in with official Vyugam AI Coordinator credentials to access the Admin Panel.
+            </p>
+          </div>
+
+          {adminLoginErr && (
+            <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold rounded-xl">
+              {adminLoginErr}
+            </div>
+          )}
+
+          <form onSubmit={handleAdminGateLogin} className="space-y-4 text-xs">
+            <div>
+              <label className="block font-bold text-slate-700 mb-1.5">Admin Name *</label>
+              <div className="relative">
+                <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  required
+                  value={adminName}
+                  onChange={(e) => setAdminName(e.target.value)}
+                  placeholder="VyugamAdmin"
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-purple-600"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block font-bold text-slate-700 mb-1.5">Password *</label>
+              <div className="relative">
+                <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="password"
+                  required
+                  value={adminPass}
+                  onChange={(e) => setAdminPass(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-purple-600"
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isLoggingIn}
+              className="w-full py-3 bg-[#2e1065] hover:bg-[#3b0764] text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md transition-all cursor-pointer disabled:opacity-50"
+            >
+              {isLoggingIn ? 'Logging in...' : 'Login as Admin'}
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (

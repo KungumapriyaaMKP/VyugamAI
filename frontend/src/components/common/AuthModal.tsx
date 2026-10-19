@@ -30,15 +30,32 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, mode, onClose, onS
     setIsSubmitting(true);
     setError(null);
 
-    const normalizedEmail = email.trim().toLowerCase();
-    if (!normalizedEmail.endsWith('@sece.ac.in')) {
-      setError('Only mail IDs with domain @sece.ac.in are allowed to ' + (mode === 'login' ? 'login.' : 'sign up.'));
-      setIsSubmitting(false);
-      return;
-    }
-
     if (mode === 'login') {
-      const res = await login(normalizedEmail, password);
+      const normalizedInput = email.trim().toLowerCase();
+      if (normalizedInput === 'vyugamadmin' || normalizedInput === 'vyugamadmin@sece.ac.in') {
+        if (password !== 'VyugamAI2026@password123') {
+          setError('Invalid Admin password.');
+          setIsSubmitting(false);
+          return;
+        }
+        const res = await login('VyugamAdmin', password);
+        setIsSubmitting(false);
+        if (res.success) {
+          onClose();
+          window.location.hash = '#admin-portal';
+        } else {
+          setError(res.error || 'Admin login failed.');
+        }
+        return;
+      }
+
+      if (!normalizedInput.endsWith('@sece.ac.in')) {
+        setError('Only mail IDs with domain @sece.ac.in are allowed to login.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      const res = await login(normalizedInput, password);
       setIsSubmitting(false);
       if (res.success) {
         onClose();
@@ -46,6 +63,36 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, mode, onClose, onS
         setError(res.error || 'Login failed.');
       }
     } else {
+      // Admin role selected in Sign Up modal: only Name (VyugamAdmin) and Password (VyugamAI2026@password123)
+      if (role === 'admin') {
+        if (name.trim().toLowerCase() !== 'vyugamadmin') {
+          setError('Invalid Admin Name. Please enter VyugamAdmin.');
+          setIsSubmitting(false);
+          return;
+        }
+        if (password !== 'VyugamAI2026@password123') {
+          setError('Invalid Admin Password.');
+          setIsSubmitting(false);
+          return;
+        }
+        const res = await login('VyugamAdmin', password);
+        setIsSubmitting(false);
+        if (res.success) {
+          onClose();
+          window.location.hash = '#admin-portal';
+        } else {
+          setError(res.error || 'Admin login failed.');
+        }
+        return;
+      }
+
+      const normalizedEmail = email.trim().toLowerCase();
+      if (!normalizedEmail.endsWith('@sece.ac.in')) {
+        setError('Only mail IDs with domain @sece.ac.in are allowed to sign up.');
+        setIsSubmitting(false);
+        return;
+      }
+
       const cleanPhone = phone.replace(/\D/g, '').replace(/^91(?=\d{10}$)/, '');
       if (!/^[6-9]\d{9}$/.test(cleanPhone)) {
         setError('Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9.');
@@ -60,7 +107,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, mode, onClose, onS
         role,
         college: college || 'Sri Eshwar College of Engineering',
         department: 'AI & Data Science',
-        phone: cleanPhone
+        phone: cleanPhone,
       });
       setIsSubmitting(false);
       if (res.success) {
@@ -74,7 +121,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, mode, onClose, onS
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
       <div className="bg-white border border-slate-200 rounded-none max-w-md w-full overflow-hidden shadow-2xl flex flex-col">
-        
         {/* Modal Header */}
         <div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
           <div className="flex items-center gap-3">
@@ -87,19 +133,21 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, mode, onClose, onS
             </div>
             <div>
               <h3 className="text-base font-bold text-[#0a2540] leading-tight">
-                {mode === 'login' ? 'Hackathon Portal Log In' : 'Sign Up'}
+                {mode === 'login' ? 'Hackathon Portal Log In' : role === 'admin' ? 'Admin Login' : 'Sign Up'}
               </h3>
               <p className="text-[11px] text-slate-500 font-medium">Vyugam AI 2026 &bull; Sri Eshwar</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-2 text-slate-500 hover:text-slate-900 rounded-none bg-slate-200 hover:bg-slate-300 transition-colors">
+          <button
+            onClick={onClose}
+            className="p-2 text-slate-500 hover:text-slate-900 rounded-none bg-slate-200 hover:bg-slate-300 transition-colors"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Modal Body */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4 text-xs text-slate-700">
-          
           {error && (
             <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-none">
               {error}
@@ -108,34 +156,67 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, mode, onClose, onS
 
           {mode === 'register' && (
             <div>
-              <label className="block font-semibold mb-1 text-slate-700">Full Name *</label>
+              <label className="block font-semibold mb-1 text-slate-700">Account Role</label>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { r: 'student', label: 'Student', icon: GraduationCap },
+                  { r: 'evaluator', label: 'Jury', icon: UserCheck },
+                  { r: 'admin', label: 'Admin', icon: Shield },
+                ].map((item) => (
+                  <button
+                    key={item.r}
+                    type="button"
+                    onClick={() => {
+                      setError(null);
+                      setRole(item.r as UserRole);
+                    }}
+                    className={`p-2 rounded-none border flex flex-col items-center gap-1 font-semibold transition-all cursor-pointer ${
+                      role === item.r
+                        ? 'bg-blue-50 border-[#1755a7] text-[#1755a7] shadow-xs'
+                        : 'bg-slate-50 border-slate-300 text-slate-600 hover:border-slate-400'
+                    }`}
+                  >
+                    <item.icon className="w-4 h-4" />
+                    <span className="text-[10px]">{item.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {mode === 'register' && (
+            <div>
+              <label className="block font-semibold mb-1 text-slate-700">
+                {role === 'admin' ? 'Admin Name *' : 'Full Name *'}
+              </label>
               <input
                 type="text"
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Arjun Vikram"
+                placeholder={role === 'admin' ? 'VyugamAdmin' : 'Arjun Vikram'}
                 className="w-full bg-slate-50 border border-slate-300 rounded-none px-3 py-2 text-slate-900 focus:outline-none focus:border-[#1755a7] focus:ring-1 focus:ring-[#1755a7]"
               />
             </div>
           )}
 
-          <div>
-            <label className="block font-semibold mb-1 text-slate-700">Email Address * (@sece.ac.in)</label>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="yourname@sece.ac.in"
-              className="w-full bg-slate-50 border border-slate-300 rounded-none px-3 py-2 text-slate-900 focus:outline-none focus:border-[#1755a7] focus:ring-1 focus:ring-[#1755a7]"
-            />
-            <p className="text-[10px] text-blue-600 font-medium mt-1">
-              Note: Only college email addresses with domain <strong>@sece.ac.in</strong> are permitted.
-            </p>
-          </div>
+          {(mode === 'login' || (mode === 'register' && role !== 'admin')) && (
+            <div>
+              <label className="block font-semibold mb-1 text-slate-700">
+                {mode === 'login' ? 'Email Address / Admin Name *' : 'Email Address * (@sece.ac.in)'}
+              </label>
+              <input
+                type={mode === 'login' ? 'text' : 'email'}
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={mode === 'login' ? 'yourname@sece.ac.in or VyugamAdmin' : 'yourname@sece.ac.in'}
+                className="w-full bg-slate-50 border border-slate-300 rounded-none px-3 py-2 text-slate-900 focus:outline-none focus:border-[#1755a7] focus:ring-1 focus:ring-[#1755a7]"
+              />
+            </div>
+          )}
 
-          {mode === 'register' && (
+          {mode === 'register' && role !== 'admin' && (
             <div>
               <label className="block font-semibold mb-1 text-slate-700">Mobile Number *</label>
               <input
@@ -146,7 +227,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, mode, onClose, onS
                 title="Enter a valid 10-digit mobile number starting with 6, 7, 8, or 9"
                 required
                 value={phone}
-                onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').replace(/^91(?=\d{10}$)/, '').slice(0, 10))}
+                onChange={(e) =>
+                  setPhone(
+                    e.target.value
+                      .replace(/\D/g, '')
+                      .replace(/^91(?=\d{10}$)/, '')
+                      .slice(0, 10)
+                  )
+                }
                 placeholder="10-digit mobile number (e.g. 9876543210)"
                 className="w-full bg-slate-50 border border-slate-300 rounded-none px-3 py-2 text-slate-900 focus:outline-none focus:border-[#1755a7] focus:ring-1 focus:ring-[#1755a7]"
               />
@@ -179,41 +267,16 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, mode, onClose, onS
             )}
           </div>
 
-          {mode === 'register' && (
-            <>
-              <div>
-                <label className="block font-semibold mb-1 text-slate-700">Account Role</label>
-                <div className="grid grid-cols-3 gap-2">
-                  {[
-                    { r: 'student', label: 'Student', icon: GraduationCap },
-                    { r: 'evaluator', label: 'Jury', icon: UserCheck },
-                    { r: 'admin', label: 'Admin', icon: Shield },
-                  ].map((item) => (
-                    <button
-                      key={item.r}
-                      type="button"
-                      onClick={() => setRole(item.r as UserRole)}
-                      className={`p-2 rounded-none border flex flex-col items-center gap-1 font-semibold transition-all ${
-                        role === item.r ? 'bg-blue-50 border-[#1755a7] text-[#1755a7] shadow-xs' : 'bg-slate-50 border-slate-300 text-slate-600 hover:border-slate-400'
-                      }`}
-                    >
-                      <item.icon className="w-4 h-4" />
-                      <span className="text-[10px]">{item.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="block font-semibold mb-1 text-slate-700">College / Institution</label>
-                <input
-                  type="text"
-                  value={college}
-                  onChange={(e) => setCollege(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-none px-3 py-2 text-slate-900 focus:outline-none focus:border-[#1755a7] focus:ring-1 focus:ring-[#1755a7]"
-                />
-              </div>
-            </>
+          {mode === 'register' && role !== 'admin' && (
+            <div>
+              <label className="block font-semibold mb-1 text-slate-700">College / Institution</label>
+              <input
+                type="text"
+                value={college}
+                onChange={(e) => setCollege(e.target.value)}
+                className="w-full bg-slate-50 border border-slate-300 rounded-none px-3 py-2 text-slate-900 focus:outline-none focus:border-[#1755a7] focus:ring-1 focus:ring-[#1755a7]"
+              />
+            </div>
           )}
 
           <button
@@ -221,7 +284,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, mode, onClose, onS
             disabled={isSubmitting}
             className="w-full py-3 rounded-none bg-[#2e1065] hover:bg-[#3b0764] text-white font-bold text-xs shadow-md transition-all disabled:opacity-50 cursor-pointer"
           >
-            {isSubmitting ? 'Processing...' : mode === 'login' ? 'Log In' : 'Sign Up'}
+            {isSubmitting
+              ? 'Processing...'
+              : mode === 'login'
+              ? 'Log In'
+              : role === 'admin'
+              ? 'Login as Admin'
+              : 'Sign Up'}
           </button>
 
           <div className="pt-2 text-center text-slate-500">
@@ -249,9 +318,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, mode, onClose, onS
               </span>
             )}
           </div>
-
         </form>
-
       </div>
     </div>
   );

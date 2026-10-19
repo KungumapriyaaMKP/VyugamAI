@@ -126,12 +126,41 @@ export function LoginPage({ initialMode = 'login', onNavigateHome, onNavigateSig
   const handleSignInSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.email || !formData.password) {
-      setErrorMsg('Please enter both your email address and password.');
+      setErrorMsg('Please enter both your email/username and password.');
       return;
     }
 
-    const normalizedEmail = formData.email.trim().toLowerCase();
-    if (!normalizedEmail.endsWith('@sece.ac.in')) {
+    const rawInput = formData.email.trim();
+    const normalizedInput = rawInput.toLowerCase();
+
+    // Direct Admin Login check
+    if (normalizedInput === 'vyugamadmin' || normalizedInput === 'vyugamadmin@sece.ac.in') {
+      if (formData.password !== 'VyugamAI2026@password123') {
+        setErrorMsg('Invalid Admin password.');
+        return;
+      }
+      try {
+        setIsSubmitting(true);
+        setErrorMsg(null);
+        setSuccessMsg(null);
+        const res = await login('VyugamAdmin', formData.password);
+        if (res.success) {
+          setSuccessMsg('Admin logged in successfully!');
+          setTimeout(() => {
+            window.location.hash = '#admin-portal';
+          }, 700);
+        } else {
+          setErrorMsg(res.error || 'Invalid Admin credentials.');
+        }
+      } catch (err: any) {
+        setErrorMsg('Admin login failed: ' + (err.message || 'Server error'));
+      } finally {
+        setIsSubmitting(false);
+      }
+      return;
+    }
+
+    if (!normalizedInput.endsWith('@sece.ac.in')) {
       setErrorMsg('Authentication is restricted to @sece.ac.in college domain accounts.');
       return;
     }
@@ -141,7 +170,7 @@ export function LoginPage({ initialMode = 'login', onNavigateHome, onNavigateSig
       setErrorMsg(null);
       setSuccessMsg(null);
 
-      const res = await login(normalizedEmail, formData.password);
+      const res = await login(normalizedInput, formData.password);
       if (res.success) {
         setSuccessMsg('User logged in successfully!');
         setTimeout(() => {
@@ -161,9 +190,41 @@ export function LoginPage({ initialMode = 'login', onNavigateHome, onNavigateSig
     }
   };
 
-  // Sign Up Handler
+  // Sign Up / Admin Login Handler
   const handleSignUpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // When Admin role is selected: login Admin directly with Name: VyugamAdmin & Pass: VyugamAI2026@password123
+    if (signUpData.role === 'admin') {
+      if (signUpData.name.trim() !== 'VyugamAdmin' && signUpData.name.trim().toLowerCase() !== 'vyugamadmin') {
+        setErrorMsg('Invalid Admin Name. Please enter VyugamAdmin.');
+        return;
+      }
+      if (signUpData.password !== 'VyugamAI2026@password123') {
+        setErrorMsg('Invalid Admin Password.');
+        return;
+      }
+      try {
+        setIsSubmitting(true);
+        setErrorMsg(null);
+        setSuccessMsg(null);
+        const res = await login('VyugamAdmin', signUpData.password);
+        if (res.success) {
+          setSuccessMsg('Admin logged in successfully!');
+          setTimeout(() => {
+            window.location.hash = '#admin-portal';
+          }, 700);
+        } else {
+          setErrorMsg(res.error || 'Invalid Admin credentials.');
+        }
+      } catch (err: any) {
+        setErrorMsg('Admin login failed: ' + (err.message || 'Server error'));
+      } finally {
+        setIsSubmitting(false);
+      }
+      return;
+    }
+
     if (!signUpData.name.trim()) {
       setErrorMsg('Full Name is required.');
       return;
@@ -462,22 +523,22 @@ export function LoginPage({ initialMode = 'login', onNavigateHome, onNavigateSig
             {/* ==================================================== */}
             {viewMode === 'signin' && (
               <form onSubmit={handleSignInSubmit} className="space-y-4">
-                {/* Email Field */}
+                {/* Email / Admin Name Field */}
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Email Address
+                    Email Address / Admin Name
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                       <Mail className="w-4 h-4" />
                     </div>
                     <input
-                      type="email"
+                      type="text"
                       name="email"
                       required
                       value={formData.email}
                       onChange={handleInputChange}
-                      placeholder="name@sece.ac.in"
+                      placeholder="name@sece.ac.in or VyugamAdmin"
                       className="w-full pl-10 pr-4 py-2.5 bg-slate-50/70 hover:bg-white border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-4 focus:ring-purple-100 transition-all placeholder:text-slate-400"
                     />
                   </div>
@@ -548,7 +609,7 @@ export function LoginPage({ initialMode = 'login', onNavigateHome, onNavigateSig
             )}
 
             {/* ==================================================== */}
-            {/* VIEW 2: SIGN UP REGISTRATION FORM                    */}
+            {/* VIEW 2: SIGN UP / ADMIN LOGIN FORM                   */}
             {/* ==================================================== */}
             {viewMode === 'signup' && (
               <form onSubmit={handleSignUpSubmit} className="space-y-3.5">
@@ -567,7 +628,10 @@ export function LoginPage({ initialMode = 'login', onNavigateHome, onNavigateSig
                       <button
                         key={item.role}
                         type="button"
-                        onClick={() => setSignUpData(prev => ({ ...prev, role: item.role as UserRole }))}
+                        onClick={() => {
+                          setErrorMsg(null);
+                          setSignUpData(prev => ({ ...prev, role: item.role as UserRole }));
+                        }}
                         className={`p-2 rounded-xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5 ${
                           signUpData.role === item.role
                             ? 'bg-purple-50 border-purple-600 text-purple-900 shadow-xs'
@@ -582,10 +646,10 @@ export function LoginPage({ initialMode = 'login', onNavigateHome, onNavigateSig
                   </div>
                 </div>
 
-                {/* Full Name */}
+                {/* Name Field (Admin Name vs Full Name) */}
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Full Name *
+                    {signUpData.role === 'admin' ? 'Admin Name *' : 'Full Name *'}
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -597,138 +661,172 @@ export function LoginPage({ initialMode = 'login', onNavigateHome, onNavigateSig
                       required
                       value={signUpData.name}
                       onChange={handleSignUpInputChange}
-                      placeholder="e.g. Arjun Vikram"
+                      placeholder={signUpData.role === 'admin' ? 'VyugamAdmin' : 'e.g. Arjun Vikram'}
                       className="w-full pl-10 pr-4 py-2 bg-slate-50/70 hover:bg-white border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-4 focus:ring-purple-100 transition-all placeholder:text-slate-400"
                     />
                   </div>
                 </div>
 
-                {/* College Email */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    College Email *
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                      <Mail className="w-4 h-4" />
+                {/* Student / Jury Fields ONLY (Hidden for Admin) */}
+                {signUpData.role !== 'admin' && (
+                  <>
+                    {/* College Email */}
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 mb-1">
+                        College Email *
+                      </label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                          <Mail className="w-4 h-4" />
+                        </div>
+                        <input
+                          type="email"
+                          name="email"
+                          required
+                          value={signUpData.email}
+                          onChange={handleSignUpInputChange}
+                          placeholder="student@sece.ac.in"
+                          className="w-full pl-10 pr-4 py-2 bg-slate-50/70 hover:bg-white border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-4 focus:ring-purple-100 transition-all placeholder:text-slate-400"
+                        />
+                      </div>
                     </div>
-                    <input
-                      type="email"
-                      name="email"
-                      required
-                      value={signUpData.email}
-                      onChange={handleSignUpInputChange}
-                      placeholder="student@sece.ac.in"
-                      className="w-full pl-10 pr-4 py-2 bg-slate-50/70 hover:bg-white border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-4 focus:ring-purple-100 transition-all placeholder:text-slate-400"
-                    />
-                  </div>
-                </div>
 
-                {/* Mobile Number */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Mobile Number *
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                      <Phone className="w-4 h-4" />
+                    {/* Mobile Number */}
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 mb-1">
+                        Mobile Number *
+                      </label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                          <Phone className="w-4 h-4" />
+                        </div>
+                        <input
+                          type="tel"
+                          name="phone"
+                          inputMode="numeric"
+                          maxLength={10}
+                          pattern="[6-9][0-9]{9}"
+                          title="Enter a valid 10-digit mobile number starting with 6, 7, 8, or 9"
+                          required
+                          value={signUpData.phone}
+                          onChange={handleSignUpInputChange}
+                          placeholder="10-digit mobile number (e.g. 9876543210)"
+                          className={`w-full pl-10 pr-4 py-2 bg-slate-50/70 hover:bg-white border rounded-xl text-sm text-slate-900 focus:outline-none focus:bg-white focus:ring-4 transition-all placeholder:text-slate-400 ${
+                            signUpData.phone.length > 0 && !/^[6-9]\d{9}$/.test(signUpData.phone)
+                              ? 'border-rose-300 focus:border-rose-500 focus:ring-rose-100'
+                              : 'border-slate-200 focus:border-purple-600 focus:ring-purple-100'
+                          }`}
+                        />
+                      </div>
+                      {signUpData.phone.length > 0 && !/^[6-9]\d{9}$/.test(signUpData.phone) && (
+                        <p className="text-[11px] text-rose-600 font-medium mt-1">
+                          {/^[0-5]/.test(signUpData.phone)
+                            ? 'Mobile number must start with 6, 7, 8, or 9.'
+                            : `Enter all 10 digits (${signUpData.phone.length}/10).`}
+                        </p>
+                      )}
                     </div>
-                    <input
-                      type="tel"
-                      name="phone"
-                      inputMode="numeric"
-                      maxLength={10}
-                      pattern="[6-9][0-9]{9}"
-                      title="Enter a valid 10-digit mobile number starting with 6, 7, 8, or 9"
-                      required
-                      value={signUpData.phone}
-                      onChange={handleSignUpInputChange}
-                      placeholder="10-digit mobile number (e.g. 9876543210)"
-                      className={`w-full pl-10 pr-4 py-2 bg-slate-50/70 hover:bg-white border rounded-xl text-sm text-slate-900 focus:outline-none focus:bg-white focus:ring-4 transition-all placeholder:text-slate-400 ${
-                        signUpData.phone.length > 0 && !/^[6-9]\d{9}$/.test(signUpData.phone)
-                          ? 'border-rose-300 focus:border-rose-500 focus:ring-rose-100'
-                          : 'border-slate-200 focus:border-purple-600 focus:ring-purple-100'
-                      }`}
-                    />
-                  </div>
-                  {signUpData.phone.length > 0 && !/^[6-9]\d{9}$/.test(signUpData.phone) && (
-                    <p className="text-[11px] text-rose-600 font-medium mt-1">
-                      {/^[0-5]/.test(signUpData.phone)
-                        ? 'Mobile number must start with 6, 7, 8, or 9.'
-                        : `Enter all 10 digits (${signUpData.phone.length}/10).`}
-                    </p>
-                  )}
-                </div>
 
-                {/* Department */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Department
-                  </label>
-                  <select
-                    name="department"
-                    value={signUpData.department}
-                    onChange={handleSignUpInputChange}
-                    className="w-full px-3 py-2 bg-slate-50/70 hover:bg-white border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-4 focus:ring-purple-100 transition-all cursor-pointer"
-                  >
-                    <option value="Department of AI & DS">AI & Data Science (Official Track)</option>
-                    <option value="Computer Science & Engineering">Computer Science & Engineering</option>
-                    <option value="Information Technology">Information Technology</option>
-                    <option value="Cyber Security">Cyber Security Wing</option>
-                    <option value="Electronics & Communication">Electronics & Communication</option>
-                  </select>
-                </div>
+                    {/* Department */}
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 mb-1">
+                        Department
+                      </label>
+                      <select
+                        name="department"
+                        value={signUpData.department}
+                        onChange={handleSignUpInputChange}
+                        className="w-full px-3 py-2 bg-slate-50/70 hover:bg-white border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-4 focus:ring-purple-100 transition-all cursor-pointer"
+                      >
+                        <option value="Department of AI & DS">AI & Data Science (Official Track)</option>
+                        <option value="Computer Science & Engineering">Computer Science & Engineering</option>
+                        <option value="Information Technology">Information Technology</option>
+                        <option value="Cyber Security">Cyber Security Wing</option>
+                        <option value="Electronics & Communication">Electronics & Communication</option>
+                      </select>
+                    </div>
+                  </>
+                )}
 
-                {/* Password & Confirm */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* Password Field (Single field for Admin, Password + Confirm for Student/Jury) */}
+                {signUpData.role === 'admin' ? (
                   <div>
                     <label className="block text-xs font-semibold text-slate-700 mb-1">
                       Password *
                     </label>
                     <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <Lock className="w-4 h-4" />
+                      </div>
                       <input
                         type={showSignUpPassword ? 'text' : 'password'}
                         name="password"
                         required
                         value={signUpData.password}
                         onChange={handleSignUpInputChange}
-                        placeholder="Min 6 chars"
-                        className="w-full pl-3 pr-8 py-2 bg-slate-50/70 hover:bg-white border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-4 focus:ring-purple-100 transition-all"
+                        placeholder="••••••••"
+                        className="w-full pl-10 pr-10 py-2 bg-slate-50/70 hover:bg-white border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-4 focus:ring-purple-100 transition-all"
                       />
                       <button
                         type="button"
                         onClick={() => setShowSignUpPassword(!showSignUpPassword)}
-                        className="absolute inset-y-0 right-0 pr-2.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
+                        className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
                       >
-                        {showSignUpPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                        {showSignUpPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
                     </div>
                   </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 mb-1">
+                        Password *
+                      </label>
+                      <div className="relative">
+                        <input
+                          type={showSignUpPassword ? 'text' : 'password'}
+                          name="password"
+                          required
+                          value={signUpData.password}
+                          onChange={handleSignUpInputChange}
+                          placeholder="Min 6 chars"
+                          className="w-full pl-3 pr-8 py-2 bg-slate-50/70 hover:bg-white border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-4 focus:ring-purple-100 transition-all"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowSignUpPassword(!showSignUpPassword)}
+                          className="absolute inset-y-0 right-0 pr-2.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
+                        >
+                          {showSignUpPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                        </button>
+                      </div>
+                    </div>
 
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      Confirm *
-                    </label>
-                    <div className="relative">
-                      <input
-                        type={showSignUpConfirmPassword ? 'text' : 'password'}
-                        name="confirmPassword"
-                        required
-                        value={signUpData.confirmPassword}
-                        onChange={handleSignUpInputChange}
-                        placeholder="Confirm password"
-                        className="w-full pl-3 pr-8 py-2 bg-slate-50/70 hover:bg-white border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-4 focus:ring-purple-100 transition-all"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowSignUpConfirmPassword(!showSignUpConfirmPassword)}
-                        className="absolute inset-y-0 right-0 pr-2.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
-                      >
-                        {showSignUpConfirmPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                      </button>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 mb-1">
+                        Confirm *
+                      </label>
+                      <div className="relative">
+                        <input
+                          type={showSignUpConfirmPassword ? 'text' : 'password'}
+                          name="confirmPassword"
+                          required
+                          value={signUpData.confirmPassword}
+                          onChange={handleSignUpInputChange}
+                          placeholder="Confirm password"
+                          className="w-full pl-3 pr-8 py-2 bg-slate-50/70 hover:bg-white border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-4 focus:ring-purple-100 transition-all"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowSignUpConfirmPassword(!showSignUpConfirmPassword)}
+                          className="absolute inset-y-0 right-0 pr-2.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
+                        >
+                          {showSignUpConfirmPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
 
                 {/* Submit Button */}
                 <button
@@ -736,7 +834,15 @@ export function LoginPage({ initialMode = 'login', onNavigateHome, onNavigateSig
                   disabled={isSubmitting}
                   className="w-full py-2.5 px-4 bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white font-semibold text-sm rounded-xl shadow-sm hover:shadow transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer mt-2"
                 >
-                  <span>{isSubmitting ? 'Creating account...' : 'Create Account'}</span>
+                  <span>
+                    {isSubmitting
+                      ? signUpData.role === 'admin'
+                        ? 'Logging in...'
+                        : 'Creating account...'
+                      : signUpData.role === 'admin'
+                      ? 'Login as Admin'
+                      : 'Create Account'}
+                  </span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
 
