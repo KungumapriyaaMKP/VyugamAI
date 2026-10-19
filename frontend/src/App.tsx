@@ -30,8 +30,8 @@ const MainAppContent: React.FC = () => {
   const { isLoading: isAuthLoading } = useAuth();
   const [activeTab, setActiveTab] = useState<string>('home');
   const [showIntroVideo, setShowIntroVideo] = useState<boolean>(() => {
-    // Only auto-play once per browser session to prevent blocking returning users and save 14MB bandwidth
-    return !sessionStorage.getItem('vyugam_intro_shown');
+    const hash = window.location.hash.replace('#', '');
+    return !hash || hash === 'home';
   });
   const [authModalState, setAuthModalState] = useState<{ isOpen: boolean; mode: 'login' | 'register' }>({
     isOpen: false,
