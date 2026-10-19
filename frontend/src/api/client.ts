@@ -456,6 +456,29 @@ async function handleCloudFallback(config: any): Promise<{ data: any; status: nu
     } catch {
       // use fallback
     }
+    // Merge any custom problems published from Admin Panel
+    const customPsRaw = localStorage.getItem('vyugam_custom_problems');
+    if (customPsRaw) {
+      try {
+        const customList: any[] = JSON.parse(customPsRaw);
+        for (const cp of customList) {
+          if (!list.some((p) => p.id === cp.id)) {
+            list.push(cp);
+          }
+        }
+      } catch {
+        // ignore
+      }
+    }
+    const deletedPsRaw = localStorage.getItem('vyugam_deleted_problems');
+    if (deletedPsRaw) {
+      try {
+        const deletedIds: string[] = JSON.parse(deletedPsRaw);
+        list = list.filter((p) => !deletedIds.includes(p.id));
+      } catch {
+        // ignore
+      }
+    }
     if (params.category && params.category !== 'All') {
       list = list.filter((p) => p.category === params.category);
     }
@@ -473,6 +496,48 @@ async function handleCloudFallback(config: any): Promise<{ data: any; status: nu
       );
     }
     return { status: 200, data: { success: true, count: list.length, problems: list } };
+  }
+
+  // 7b. POST /problems (Publish new problem statement from Admin Panel)
+  if (method === 'post' && path === '/problems') {
+    const newPs = {
+      id: body.id || `VYUGAM-${Math.floor(100 + Math.random() * 900)}`,
+      title: body.title,
+      category: body.category || 'AI & Machine Learning',
+      domain_bucket: body.domain_bucket || 'Software',
+      organization: body.organization || 'Sri Eshwar College of Engineering',
+      description: body.description || '',
+      desired_outcome: body.desired_outcome || '',
+      complexity: body.complexity || 'Medium',
+      dataset_url: body.dataset_url || '',
+      submissions_count: 0,
+      is_active: 1,
+    };
+    const customPsRaw = localStorage.getItem('vyugam_custom_problems');
+    const customList: any[] = customPsRaw ? JSON.parse(customPsRaw) : [];
+    const filtered = customList.filter((p) => p.id !== newPs.id);
+    filtered.push(newPs);
+    localStorage.setItem('vyugam_custom_problems', JSON.stringify(filtered));
+
+    supabase.from('problem_statements').upsert(newPs).then(() => {});
+    return { status: 201, data: { success: true, message: 'Problem statement published', id: newPs.id, problem: newPs } };
+  }
+
+  // 7c. DELETE /problems/:id
+  if (method === 'delete' && path.startsWith('/problems/')) {
+    const psId = decodeURIComponent(path.replace('/problems/', ''));
+    const deletedPsRaw = localStorage.getItem('vyugam_deleted_problems');
+    const deletedIds: string[] = deletedPsRaw ? JSON.parse(deletedPsRaw) : [];
+    if (!deletedIds.includes(psId)) deletedIds.push(psId);
+    localStorage.setItem('vyugam_deleted_problems', JSON.stringify(deletedIds));
+
+    const customPsRaw = localStorage.getItem('vyugam_custom_problems');
+    if (customPsRaw) {
+      const customList: any[] = JSON.parse(customPsRaw).filter((p: any) => p.id !== psId);
+      localStorage.setItem('vyugam_custom_problems', JSON.stringify(customList));
+    }
+    supabase.from('problem_statements').delete().eq('id', psId).then(() => {});
+    return { status: 200, data: { success: true, message: 'Problem statement deleted', id: psId } };
   }
 
   // 8. GET /teams/my-team
@@ -589,6 +654,7 @@ async function handleCloudFallback(config: any): Promise<{ data: any; status: nu
       name: body.name,
       leader_id: currentUser.id,
       leader_name: currentUser.name,
+      leader_email: currentUser.email,
       college: body.college || 'Sri Eshwar College of Engineering',
       track: body.track || 'Software',
       problem_statement_id: savedPs?.id || null,
@@ -687,8 +753,11 @@ async function handleCloudFallback(config: any): Promise<{ data: any; status: nu
     const savedUser = localStorage.getItem('vyugam_user');
     const currentUser = savedUser ? JSON.parse(savedUser) : null;
     const subId = 'sub-' + Math.random().toString(36).substring(2, 10);
-    if (currentUser) {
-      const localTeamRaw = localStorage.getItem(`vyugam_team_${currentUser.email}`);
+    if (currentUser?.email) {
+      const emailKey = currentUser.email.toLowerCase();
+      const localTeamRaw =
+        localStorage.getItem(`vyugam_team_${emailKey}`) ||
+        localStorage.getItem(`vyugam_team_${currentUser.email}`);
       if (localTeamRaw) {
         const team = JSON.parse(localTeamRaw);
         team.status = 'submitted';
@@ -707,6 +776,7 @@ async function handleCloudFallback(config: any): Promise<{ data: any; status: nu
           submitted_at: new Date().toISOString(),
         };
         team.submission = subObj;
+        localStorage.setItem(`vyugam_team_${emailKey}`, JSON.stringify(team));
         localStorage.setItem(`vyugam_team_${currentUser.email}`, JSON.stringify(team));
         supabase.from('submissions').upsert(subObj).then(() => {});
       }
@@ -734,21 +804,303 @@ async function handleCloudFallback(config: any): Promise<{ data: any; status: nu
 
   // 13. GET /public/announcements
   if (method === 'get' && path === '/public/announcements') {
+    const customAnnRaw = localStorage.getItem('vyugam_custom_announcements');
+    const customAnns: any[] = customAnnRaw ? JSON.parse(customAnnRaw) : [];
+    const defaultAnns = [
+      {
+        id: 'ann-1',
+        title: 'Vyugam AI Hackathon 2026 Registration Now Live',
+        message: 'Register your teams of 4 members by October 25, 2026.',
+        category: 'Urgent',
+        is_banner: 1,
+      },
+    ];
     return {
       status: 200,
       data: {
         success: true,
-        announcements: [
-          {
-            id: 'ann-1',
-            title: 'Vyugam AI Hackathon 2026 Registration Now Live',
-            message: 'Register your teams of 4 members by October 25, 2026.',
-            category: 'Urgent',
-            is_banner: 1,
-          },
-        ],
+        announcements: [...customAnns, ...defaultAnns],
       },
     };
+  }
+
+  // 14. GET /admin/stats & GET /admin/teams
+  if (method === 'get' && (path === '/admin/stats' || path === '/admin/teams')) {
+    const teamsMap = new Map<string, any>();
+    const submissionsMap = new Map<string, any>();
+
+    // Load from Supabase if available
+    try {
+      const [teamsRes, membersRes, subsRes, usersRes] = await Promise.all([
+        supabase.from('teams').select('*'),
+        supabase.from('team_members').select('*'),
+        supabase.from('submissions').select('*'),
+        supabase.from('users').select('*'),
+      ]);
+
+      const usersById = new Map<string, any>();
+      (usersRes.data || []).forEach((u: any) => usersById.set(u.id, u));
+
+      (subsRes.data || []).forEach((s: any) => submissionsMap.set(s.team_id, s));
+
+      (teamsRes.data || []).forEach((t: any) => {
+        const leader = usersById.get(t.leader_id);
+        const members = (membersRes.data || []).filter((m: any) => m.team_id === t.id);
+        const ps = FALLBACK_PROBLEMS.find((p) => p.id === t.problem_statement_id);
+        const sub = submissionsMap.get(t.id) || null;
+        teamsMap.set(t.id, {
+          ...t,
+          leader_name: leader?.name || t.leader_name || members[0]?.name || 'Team Lead',
+          leader_email: leader?.email || t.leader_email || members[0]?.email || '',
+          problem_title: ps?.title || t.problem_title || null,
+          problem_category: ps?.category || t.problem_category || null,
+          members,
+          member_count: members.length,
+          submission: sub,
+        });
+      });
+    } catch {
+      // ignore
+    }
+
+    // Merge all localStorage teams so current browser's teams always appear immediately
+    const savedPsRaw = localStorage.getItem('vyugam_selected_ps');
+    const savedPs = savedPsRaw
+      ? (() => {
+          try {
+            return JSON.parse(savedPsRaw);
+          } catch {
+            return null;
+          }
+        })()
+      : null;
+
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('vyugam_team_')) {
+        try {
+          const lt = JSON.parse(localStorage.getItem(key) || '{}');
+          if (lt && lt.id) {
+            if (savedPs?.id && !lt.problem_statement_id) {
+              lt.problem_statement_id = savedPs.id;
+              lt.problem_title = savedPs.title;
+              lt.problem_category = savedPs.category;
+            }
+            const ps = FALLBACK_PROBLEMS.find((p) => p.id === lt.problem_statement_id);
+            const enriched = {
+              ...lt,
+              leader_name: lt.leader_name || lt.members?.[0]?.name || 'Team Lead',
+              leader_email: lt.leader_email || lt.members?.[0]?.email || '',
+              problem_title: lt.problem_title || ps?.title || null,
+              problem_category: lt.problem_category || ps?.category || null,
+              members: lt.members || [],
+              member_count: (lt.members || []).length,
+            };
+            teamsMap.set(lt.id, enriched);
+            if (lt.submission) {
+              submissionsMap.set(lt.id, lt.submission);
+            }
+          }
+        } catch {
+          // ignore
+        }
+      }
+    }
+
+    // Add default demo team if no teams exist at all
+    if (teamsMap.size === 0) {
+      const demoTeam = {
+        id: 'team-neural-01',
+        name: 'Team Neural Nexus',
+        leader_id: 'user-student-01',
+        leader_name: 'Arjun Vikram',
+        leader_email: 'arjun@sece.ac.in',
+        college: 'Sri Eshwar College of Engineering',
+        track: 'Software',
+        problem_statement_id: 'VYUGAM-001',
+        problem_title: 'Autonomous Multi Agent LLM Orchestration for Enterprise Workflows',
+        problem_category: 'AI & Machine Learning',
+        status: 'submitted',
+        member_count: 4,
+        members: [
+          { id: 'm1', name: 'Arjun Vikram', email: 'arjun@sece.ac.in', role_in_team: 'Team Leader', gender: 'Male', college_id_no: '24AD001' },
+          { id: 'm2', name: 'Priya Dharshini', email: 'priya@sece.ac.in', role_in_team: 'ML Engineer', gender: 'Female', college_id_no: '24AD002' },
+          { id: 'm3', name: 'Karthik Raja', email: 'karthik@sece.ac.in', role_in_team: 'Full Stack Dev', gender: 'Male', college_id_no: '24AD003' },
+          { id: 'm4', name: 'Divya Bharathi', email: 'divya@sece.ac.in', role_in_team: 'UI/UX Architect', gender: 'Female', college_id_no: '24AD004' },
+        ],
+        submission: {
+          id: 'sub-demo-01',
+          team_id: 'team-neural-01',
+          problem_statement_id: 'VYUGAM-001',
+          idea_title: 'OmniFlow: Self-Healing Multi-Agent DAG Engine',
+          executive_summary: 'Deterministic multi-agent orchestration framework with LangGraph and automated rollback recovery.',
+          proposed_solution: 'Stateful supervisor-worker agent mesh with real-time token telemetry and tool sandboxing.',
+          tech_stack: 'Python, LangGraph, FastAPI, React, PostgreSQL',
+          ppt_url: 'https://docs.google.com/presentation/d/vyugam-demo-deck',
+          github_url: 'https://github.com/vyugam-ai/omniflow-agent',
+          demo_video_url: 'https://youtu.be/vyugam-demo',
+          status: 'submitted',
+          submitted_at: new Date().toISOString(),
+        },
+      };
+      teamsMap.set(demoTeam.id, demoTeam);
+      submissionsMap.set(demoTeam.id, demoTeam.submission);
+    }
+
+    const teams = Array.from(teamsMap.values());
+    const customScoresRaw = localStorage.getItem('vyugam_admin_scores');
+    const customScores: Record<string, { score: number; feedback: string }> = customScoresRaw ? JSON.parse(customScoresRaw) : {};
+
+    const submissions = Array.from(submissionsMap.values()).map((s: any) => {
+      const t = teamsMap.get(s.team_id);
+      const ps = FALLBACK_PROBLEMS.find((p) => p.id === s.problem_statement_id);
+      const customEval = customScores[s.id];
+      return {
+        ...s,
+        team_name: t?.name || 'Hackathon Team',
+        team_track: t?.track || 'Software',
+        college: t?.college || 'Sri Eshwar College of Engineering',
+        problem_title: ps?.title || t?.problem_title || s.problem_statement_id,
+        avg_score: customEval ? customEval.score : s.avg_score || 91,
+        feedback_remarks: customEval?.feedback || 'Strong technical architecture and clear execution plan.',
+      };
+    });
+
+    const topTeams = submissions
+      .map((s: any) => ({
+        team_id: s.team_id,
+        team_name: s.team_name,
+        college: s.college,
+        track: s.team_track,
+        submission_id: s.id,
+        idea_title: s.idea_title,
+        problem_statement_id: s.problem_statement_id,
+        ps_title: s.problem_title,
+        avg_score: s.avg_score || 90,
+        eval_count: 1,
+      }))
+      .sort((a, b) => b.avg_score - a.avg_score);
+
+    const customPsRaw = localStorage.getItem('vyugam_custom_problems');
+    const customPsCount = customPsRaw ? JSON.parse(customPsRaw).length : 0;
+
+    const customAnnRaw = localStorage.getItem('vyugam_custom_announcements');
+    const customAnns: any[] = customAnnRaw ? JSON.parse(customAnnRaw) : [];
+    const announcements = [
+      ...customAnns,
+      {
+        id: 'ann-1',
+        title: 'Vyugam AI Hackathon 2026 Registration Now Live',
+        message: 'Register your teams of 4 members by October 25, 2026.',
+        category: 'Urgent',
+        is_banner: 1,
+      },
+    ];
+
+    const totalParticipants = teams.reduce((acc, t) => acc + (t.members?.length || 4), 0);
+
+    return {
+      status: 200,
+      data: {
+        success: true,
+        count: teams.length,
+        teams,
+        submissions,
+        topTeams,
+        announcements,
+        stats: {
+          totalUsers: totalParticipants + 4,
+          totalStudents: totalParticipants,
+          totalEvaluators: 3,
+          totalTeams: teams.length,
+          totalSubmissions: submissions.length,
+          totalEvaluated: topTeams.length,
+          totalProblemStatements: FALLBACK_PROBLEMS.length + customPsCount,
+        },
+      },
+    };
+  }
+
+  // 15. PATCH /admin/teams/:id/status
+  if (method === 'patch' && path.startsWith('/admin/teams/') && path.endsWith('/status')) {
+    const teamId = path.replace('/admin/teams/', '').replace('/status', '');
+    const newStatus = body.status || 'shortlisted';
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('vyugam_team_')) {
+        try {
+          const lt = JSON.parse(localStorage.getItem(key) || '{}');
+          if (lt && lt.id === teamId) {
+            lt.status = newStatus;
+            localStorage.setItem(key, JSON.stringify(lt));
+          }
+        } catch {
+          // ignore
+        }
+      }
+    }
+    supabase.from('teams').update({ status: newStatus }).eq('id', teamId).then(() => {});
+    return { status: 200, data: { success: true, message: `Team status updated to ${newStatus}`, id: teamId, status: newStatus } };
+  }
+
+  // 16. DELETE /admin/teams/:id
+  if (method === 'delete' && path.startsWith('/admin/teams/')) {
+    const teamId = path.replace('/admin/teams/', '');
+    const keysToDelete: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('vyugam_team_')) {
+        try {
+          const lt = JSON.parse(localStorage.getItem(key) || '{}');
+          if (lt && lt.id === teamId) keysToDelete.push(key);
+        } catch {
+          // ignore
+        }
+      }
+    }
+    keysToDelete.forEach((k) => localStorage.removeItem(k));
+    supabase.from('teams').delete().eq('id', teamId).then(() => {});
+    return { status: 200, data: { success: true, message: 'Team removed', id: teamId } };
+  }
+
+  // 17. POST /admin/evaluate
+  if (method === 'post' && path === '/admin/evaluate') {
+    const { submission_id, score, feedback } = body;
+    const customScoresRaw = localStorage.getItem('vyugam_admin_scores');
+    const customScores: Record<string, { score: number; feedback: string }> = customScoresRaw ? JSON.parse(customScoresRaw) : {};
+    customScores[submission_id] = { score: Number(score), feedback: feedback || 'Evaluated by Admin Panel' };
+    localStorage.setItem('vyugam_admin_scores', JSON.stringify(customScores));
+    return { status: 200, data: { success: true, message: 'Evaluation score saved', submission_id, score: Number(score) } };
+  }
+
+  // 18. POST /admin/announcements
+  if (method === 'post' && path === '/admin/announcements') {
+    const newAnn = {
+      id: 'ann-' + Math.random().toString(36).substring(2, 8),
+      title: body.title,
+      message: body.message,
+      category: body.category || 'General',
+      is_banner: 1,
+      created_at: new Date().toISOString(),
+    };
+    const customAnnRaw = localStorage.getItem('vyugam_custom_announcements');
+    const customAnns: any[] = customAnnRaw ? JSON.parse(customAnnRaw) : [];
+    customAnns.unshift(newAnn);
+    localStorage.setItem('vyugam_custom_announcements', JSON.stringify(customAnns));
+    supabase.from('announcements').upsert(newAnn).then(() => {});
+    return { status: 201, data: { success: true, message: 'Announcement broadcasted', announcement: newAnn } };
+  }
+
+  // 19. DELETE /admin/announcements/:id
+  if (method === 'delete' && path.startsWith('/admin/announcements/')) {
+    const annId = path.replace('/admin/announcements/', '');
+    const customAnnRaw = localStorage.getItem('vyugam_custom_announcements');
+    if (customAnnRaw) {
+      const filtered = JSON.parse(customAnnRaw).filter((a: any) => a.id !== annId);
+      localStorage.setItem('vyugam_custom_announcements', JSON.stringify(filtered));
+    }
+    supabase.from('announcements').delete().eq('id', annId).then(() => {});
+    return { status: 200, data: { success: true, message: 'Announcement removed', id: annId } };
   }
 
   return null;
@@ -758,9 +1110,11 @@ async function handleCloudFallback(config: any): Promise<{ data: any; status: nu
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
-    // If backend server is unreachable (Network Error / timeout), mark it and use Cloud Supabase fallback
-    if (!error.response && error.config) {
-      isBackendUnreachable = true;
+    // If backend server is unreachable OR returns 401/403/404 on fallback-supported routes, use Cloud Supabase fallback
+    if (error.config && (!error.response || [401, 403, 404, 500].includes(error.response?.status))) {
+      if (!error.response) {
+        isBackendUnreachable = true;
+      }
       const fallbackResponse = await handleCloudFallback(error.config);
       if (fallbackResponse) {
         if (fallbackResponse.status >= 400) {
@@ -782,10 +1136,6 @@ apiClient.interceptors.response.use(
       }
     }
 
-    if (error.response && error.response.status === 401) {
-      localStorage.removeItem('vyugam_token');
-      localStorage.removeItem('vyugam_user');
-    }
     return Promise.reject(error);
   }
 );

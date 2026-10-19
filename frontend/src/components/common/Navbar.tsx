@@ -21,6 +21,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenA
     { id: 'faq', label: 'FAQs' },
     { id: 'contact', label: 'Contact Us' },
     { id: 'student-portal', label: 'Team Portal' },
+    { id: 'admin-portal', label: 'Admin Panel' },
   ];
 
   return (

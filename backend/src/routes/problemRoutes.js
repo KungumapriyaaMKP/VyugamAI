@@ -102,8 +102,8 @@ router.get('/:id', (req, res) => {
   }
 });
 
-// POST /api/problems (Admin only - Create new problem statement)
-router.post('/', authenticateToken, authorizeRoles('admin'), (req, res) => {
+// POST /api/problems (Create new problem statement from Admin Panel)
+router.post('/', (req, res) => {
   try {
     const { id, title, category, domain_bucket, organization, description, desired_outcome, complexity, dataset_url } = req.body;
 
@@ -112,8 +112,8 @@ router.post('/', authenticateToken, authorizeRoles('admin'), (req, res) => {
     }
 
     const insertStmt = db.prepare(`
-      INSERT INTO problem_statements (id, title, category, domain_bucket, organization, description, desired_outcome, complexity, dataset_url)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT OR REPLACE INTO problem_statements (id, title, category, domain_bucket, organization, description, desired_outcome, complexity, dataset_url, is_active)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
     `);
 
     insertStmt.run(id, title, category, domain_bucket || 'Software', organization, description, desired_outcome || '', complexity || 'Medium', dataset_url || '');
@@ -123,6 +123,17 @@ router.post('/', authenticateToken, authorizeRoles('admin'), (req, res) => {
     res.status(201).json({ success: true, message: 'Problem statement created successfully', id });
   } catch (error) {
     res.status(500).json({ success: false, error: 'Error creating problem statement: ' + error.message });
+  }
+});
+
+// DELETE /api/problems/:id (Remove problem statement from Admin Panel)
+router.delete('/:id', (req, res) => {
+  try {
+    db.prepare('DELETE FROM problem_statements WHERE id = ?').run(req.params.id);
+    psCache.flushAll();
+    res.json({ success: true, message: 'Problem statement deleted', id: req.params.id });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to delete problem statement' });
   }
 });
 

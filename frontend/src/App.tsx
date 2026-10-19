@@ -42,9 +42,9 @@ const MainAppContent: React.FC = () => {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.replace('#', '');
-      const validTabs = ['home', 'about', 'problems', 'process', 'timeline', 'faq', 'contact', 'student-portal', 'evaluator-portal', 'admin-portal', 'login-page', 'login', 'signup-page', 'signup', 'register'];
+      const validTabs = ['home', 'about', 'problems', 'process', 'timeline', 'faq', 'contact', 'student-portal', 'evaluator-portal', 'admin-portal', 'admin', 'login-page', 'login', 'signup-page', 'signup', 'register'];
       if (validTabs.includes(hash)) {
-        const normalizedTab = hash === 'login' ? 'login-page' : (hash === 'signup' || hash === 'register') ? 'signup-page' : hash === 'timeline' ? 'process' : hash;
+        const normalizedTab = hash === 'login' ? 'login-page' : (hash === 'signup' || hash === 'register') ? 'signup-page' : hash === 'timeline' ? 'process' : hash === 'admin' ? 'admin-portal' : hash;
         setActiveTab(normalizedTab);
         if (normalizedTab === 'about') {
           setTimeout(() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' }), 120);
