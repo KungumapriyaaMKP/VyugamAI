@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Eye, EyeOff, ArrowLeft, CheckCircle, AlertCircle, Mail, User, Shield, Lock, ArrowRight, Trophy } from 'lucide-react';
+import { Eye, EyeOff, ArrowLeft, CheckCircle, AlertCircle, Mail, User, Shield, Lock, ArrowRight, Trophy, Phone } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import type { UserRole } from '../../types';
 import { RobotHero } from './robot-hero';
@@ -135,7 +135,7 @@ export function LoginPage({ initialMode = 'login', onNavigateHome, onNavigateSig
 
       const res = await login(normalizedEmail, formData.password);
       if (res.success) {
-        setSuccessMsg('Player authentication successful! Entering Vyugam Arena...');
+        setSuccessMsg('User logged in successfully!');
         setTimeout(() => {
           if (onNavigateHome) {
             onNavigateHome();
@@ -144,7 +144,7 @@ export function LoginPage({ initialMode = 'login', onNavigateHome, onNavigateSig
           }
         }, 900);
       } else {
-        setErrorMsg(res.error || 'Invalid player credentials. Check your email & password.');
+        setErrorMsg(res.error || 'Invalid user credentials. Check your email & password.');
       }
     } catch (err: any) {
       setErrorMsg('Login failed: ' + (err.message || 'Server error'));
@@ -157,7 +157,7 @@ export function LoginPage({ initialMode = 'login', onNavigateHome, onNavigateSig
   const handleSignUpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!signUpData.name.trim()) {
-      setErrorMsg('Player Name is required.');
+      setErrorMsg('Full Name is required.');
       return;
     }
     const normalizedEmail = signUpData.email.trim().toLowerCase();
@@ -165,12 +165,16 @@ export function LoginPage({ initialMode = 'login', onNavigateHome, onNavigateSig
       setErrorMsg('Only mail IDs with domain @sece.ac.in are allowed to register.');
       return;
     }
+    if (!signUpData.phone.trim()) {
+      setErrorMsg('Mobile Number is required.');
+      return;
+    }
     if (signUpData.password.length < 6) {
-      setErrorMsg('Passcode must be at least 6 characters long.');
+      setErrorMsg('Password must be at least 6 characters long.');
       return;
     }
     if (signUpData.password !== signUpData.confirmPassword) {
-      setErrorMsg('Passcodes do not match. Please re-enter.');
+      setErrorMsg('Passwords do not match. Please re-enter.');
       return;
     }
 
@@ -190,7 +194,7 @@ export function LoginPage({ initialMode = 'login', onNavigateHome, onNavigateSig
       });
 
       if (res.success) {
-        setSuccessMsg('Player registered successfully! Entering Vyugam Arena...');
+        setSuccessMsg('User registered successfully!');
         setTimeout(() => {
           if (onNavigateHome) onNavigateHome();
           else navigate('/');
@@ -602,6 +606,27 @@ export function LoginPage({ initialMode = 'login', onNavigateHome, onNavigateSig
                       value={signUpData.email}
                       onChange={handleSignUpInputChange}
                       placeholder="student@sece.ac.in"
+                      className="w-full pl-10 pr-4 py-2 bg-slate-50/70 hover:bg-white border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-4 focus:ring-purple-100 transition-all placeholder:text-slate-400"
+                    />
+                  </div>
+                </div>
+
+                {/* Mobile Number */}
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    Mobile Number *
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                      <Phone className="w-4 h-4" />
+                    </div>
+                    <input
+                      type="tel"
+                      name="phone"
+                      required
+                      value={signUpData.phone}
+                      onChange={handleSignUpInputChange}
+                      placeholder="e.g. +91 98765 43210"
                       className="w-full pl-10 pr-4 py-2 bg-slate-50/70 hover:bg-white border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-4 focus:ring-purple-100 transition-all placeholder:text-slate-400"
                     />
                   </div>

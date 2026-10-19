@@ -16,8 +16,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, mode, onClose, onS
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
   const [role, setRole] = useState<UserRole>('student');
-  const [college, setCollege] = useState('Vyugam Institute of Technology');
+  const [college, setCollege] = useState('Sri Eshwar College of Engineering');
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -52,7 +53,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, mode, onClose, onS
         role,
         college: college || 'Sri Eshwar College of Engineering',
         department: 'AI & Data Science',
-        phone: ''
+        phone: phone.trim()
       });
       setIsSubmitting(false);
       if (res.success) {
@@ -126,6 +127,20 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, mode, onClose, onS
               Note: Only college email addresses with domain <strong>@sece.ac.in</strong> are permitted.
             </p>
           </div>
+
+          {mode === 'register' && (
+            <div>
+              <label className="block font-semibold mb-1 text-slate-700">Mobile Number *</label>
+              <input
+                type="tel"
+                required
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="e.g. +91 98765 43210"
+                className="w-full bg-slate-50 border border-slate-300 rounded-none px-3 py-2 text-slate-900 focus:outline-none focus:border-[#1755a7] focus:ring-1 focus:ring-[#1755a7]"
+              />
+            </div>
+          )}
 
           <div>
             <label className="block font-semibold mb-1 text-slate-700">Password *</label>
