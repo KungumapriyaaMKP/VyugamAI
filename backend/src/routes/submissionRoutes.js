@@ -61,8 +61,10 @@ router.post('/submit', authenticateToken, async (req, res) => {
       status: 'submitted'
     };
 
-    // Sync proposal to Supabase
-    supabaseService.syncSubmission(subObj);
+    // Ensure team exists in Supabase, then sync proposal to Supabase
+    const leaderUser = db.prepare('SELECT * FROM users WHERE id = ?').get(team.leader_id);
+    const canonicalTeamId = await supabaseService.syncTeam({ ...team, status: 'submitted' }, leaderUser);
+    await supabaseService.syncSubmission({ ...subObj, team_id: canonicalTeamId || team.id });
 
     return res.status(201).json({ success: true, message: 'Idea proposal submitted and synced to Supabase', submissionId: subId });
   } catch (error) {

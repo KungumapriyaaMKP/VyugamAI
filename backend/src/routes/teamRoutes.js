@@ -124,11 +124,12 @@ router.post('/create', authenticateToken, async (req, res) => {
     const teamId = 'team-' + uuidv4().slice(0, 8);
     const resolvedCollege = college || leaderUser?.college || 'Sri Eshwar College of Engineering';
     const resolvedTrack = track || 'Software';
+    const resolvedPsId = req.body.problem_statement_id || null;
 
     db.prepare(`
-      INSERT INTO teams (id, name, leader_id, college, track, status)
-      VALUES (?, ?, ?, ?, ?, 'forming')
-    `).run(teamId, trimmedName, leaderId, resolvedCollege, resolvedTrack);
+      INSERT INTO teams (id, name, leader_id, college, track, problem_statement_id, status)
+      VALUES (?, ?, ?, ?, ?, ?, 'forming')
+    `).run(teamId, trimmedName, leaderId, resolvedCollege, resolvedTrack, resolvedPsId);
 
     const teamObj = {
       id: teamId,
@@ -136,6 +137,7 @@ router.post('/create', authenticateToken, async (req, res) => {
       leader_id: leaderId,
       college: resolvedCollege,
       track: resolvedTrack,
+      problem_statement_id: resolvedPsId,
       status: 'forming'
     };
 
@@ -179,22 +181,29 @@ router.post('/create', authenticateToken, async (req, res) => {
       allMembersToSync.push(mObj);
     }
 
-    // Respond immediately for instant UX, and sync to Supabase in background
+    // Sync to Supabase (resolve canonical teamId & leaderId so FKs succeed)
+    try {
+      const syncedTeamId = await supabaseService.syncTeam(teamObj, {
+        id: leaderId,
+        name: leaderName,
+        email: leaderEmail,
+        role: 'student',
+        college: resolvedCollege,
+      });
+      await Promise.all(
+        allMembersToSync.map((m) =>
+          supabaseService.syncTeamMember({ ...m, team_id: syncedTeamId || teamId })
+        )
+      );
+    } catch (syncErr) {
+      console.warn('Team sync notice:', syncErr.message);
+    }
+
     res.status(201).json({
       success: true,
       message: 'Team created successfully with 4 members and synced to Supabase',
       teamId
     });
-
-    // Non-blocking background sync to Supabase
-    (async () => {
-      try {
-        await supabaseService.syncTeam(teamObj);
-        await Promise.all(allMembersToSync.map(m => supabaseService.syncTeamMember(m)));
-      } catch (syncErr) {
-        console.warn('Background team sync notice:', syncErr.message);
-      }
-    })();
   } catch (error) {
     console.error('Error creating team:', error);
     res.status(500).json({ success: false, error: error.message || 'Failed to create team.' });
@@ -231,8 +240,8 @@ router.post('/select-problem', authenticateToken, async (req, res) => {
 
     db.prepare('UPDATE teams SET problem_statement_id = ? WHERE id = ?').run(problemId, team.id);
 
-    // Map Problem Statement selection in Supabase in background
-    supabaseService.mapTeamProblem(team.id, problemId).catch(() => {});
+    // Map Problem Statement selection in Supabase
+    await supabaseService.mapTeamProblem(team.id, problemId, req.user?.email);
 
     res.json({
       success: true,

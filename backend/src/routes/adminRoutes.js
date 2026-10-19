@@ -140,7 +140,7 @@ router.get('/teams', (req, res) => {
 });
 
 // PATCH /api/admin/teams/:id/status (Update team status: forming, submitted, shortlisted, winner)
-router.patch('/teams/:id/status', (req, res) => {
+router.patch('/teams/:id/status', async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
@@ -148,65 +148,92 @@ router.patch('/teams/:id/status', (req, res) => {
       return res.status(400).json({ success: false, error: 'Status is required' });
     }
     db.prepare('UPDATE teams SET status = ? WHERE id = ?').run(status, id);
-    res.json({ success: true, message: `Team status updated to ${status}`, id, status });
+    await supabaseService.updateTeamStatus(id, status);
+    res.json({ success: true, message: `Team status updated to ${status} and synced to Supabase`, id, status });
   } catch (error) {
     res.status(500).json({ success: false, error: 'Failed to update team status' });
   }
 });
 
 // DELETE /api/admin/teams/:id (Delete a team)
-router.delete('/teams/:id', (req, res) => {
+router.delete('/teams/:id', async (req, res) => {
   try {
     const { id } = req.params;
+    const subs = db.prepare('SELECT id FROM submissions WHERE team_id = ?').all(id);
+    for (const s of subs) {
+      db.prepare('DELETE FROM evaluations WHERE submission_id = ?').run(s.id);
+    }
     db.prepare('DELETE FROM team_members WHERE team_id = ?').run(id);
     db.prepare('DELETE FROM submissions WHERE team_id = ?').run(id);
     db.prepare('DELETE FROM teams WHERE id = ?').run(id);
-    res.json({ success: true, message: 'Team removed successfully', id });
+    await supabaseService.deleteTeam(id);
+    res.json({ success: true, message: 'Team removed from database and Supabase', id });
   } catch (error) {
     res.status(500).json({ success: false, error: 'Failed to delete team' });
   }
 });
 
 // POST /api/admin/evaluate (Admin quick score/evaluation for a submission)
-router.post('/evaluate', (req, res) => {
+router.post('/evaluate', async (req, res) => {
   try {
     const { submission_id, score, feedback } = req.body;
     if (!submission_id || score === undefined) {
       return res.status(400).json({ success: false, error: 'Submission ID and score are required' });
     }
     const numScore = Math.max(0, Math.min(100, Number(score)));
-    const part = Math.round(numScore / 4);
-    const evalId = 'eval-' + uuidv4().slice(0, 8);
+    const part = Math.floor(numScore / 5);
+    const remainder = numScore - part * 4;
     const adminUser = db.prepare("SELECT id FROM users WHERE role = 'admin' LIMIT 1").get() ||
       db.prepare('SELECT id FROM users LIMIT 1').get();
+    const evaluatorId = adminUser ? adminUser.id : 'user-admin-01';
+    const commentsText = feedback || 'Evaluated by Admin Panel';
+    const decisionText = numScore >= 60 ? 'Shortlist' : 'Under Review';
 
     const existing = db.prepare('SELECT id FROM evaluations WHERE submission_id = ?').get(submission_id);
+    const evalId = existing ? existing.id : 'eval-' + uuidv4().slice(0, 8);
+
     if (existing) {
       db.prepare(`
         UPDATE evaluations
-        SET novelty_score = ?, feasibility_score = ?, impact_score = ?, presentation_score = ?, total_score = ?, feedback_remarks = ?
+        SET innovation_score = ?, technical_score = ?, feasibility_score = ?, ui_ux_score = ?, presentation_score = ?, total_score = ?, comments = ?, decision = ?
         WHERE id = ?
-      `).run(part, part, part, numScore - part * 3, numScore, feedback || 'Evaluated by Admin Panel', existing.id);
+      `).run(part, part, part, part, remainder, numScore, commentsText, decisionText, evalId);
     } else {
       db.prepare(`
-        INSERT INTO evaluations (id, submission_id, evaluator_id, novelty_score, feasibility_score, impact_score, presentation_score, total_score, feedback_remarks)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO evaluations (id, submission_id, evaluator_id, innovation_score, technical_score, feasibility_score, ui_ux_score, presentation_score, total_score, comments, decision)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).run(
         evalId,
         submission_id,
-        adminUser ? adminUser.id : 'user-admin-01',
+        evaluatorId,
         part,
         part,
         part,
-        numScore - part * 3,
+        part,
+        remainder,
         numScore,
-        feedback || 'Evaluated by Admin Panel'
+        commentsText,
+        decisionText
       );
     }
 
-    db.prepare("UPDATE submissions SET status = 'evaluated' WHERE id = ?").run(submission_id);
+    db.prepare("UPDATE submissions SET status = 'shortlisted' WHERE id = ?").run(submission_id);
 
-    res.json({ success: true, message: 'Score saved to leaderboard', submission_id, score: numScore });
+    await supabaseService.syncEvaluation({
+      id: evalId,
+      submission_id,
+      evaluator_id: evaluatorId,
+      innovation_score: part,
+      technical_score: part,
+      feasibility_score: part,
+      ui_ux_score: part,
+      presentation_score: remainder,
+      total_score: numScore,
+      comments: commentsText,
+      decision: decisionText,
+    });
+
+    res.json({ success: true, message: 'Score saved to leaderboard and synced to Supabase', submission_id, score: numScore });
   } catch (error) {
     console.error('Admin evaluate error:', error);
     res.status(500).json({ success: false, error: 'Failed to save evaluation score' });
@@ -214,7 +241,7 @@ router.post('/evaluate', (req, res) => {
 });
 
 // POST /api/admin/announcements (Create new announcement banner)
-router.post('/announcements', (req, res) => {
+router.post('/announcements', async (req, res) => {
   try {
     const { title, message, category, is_banner } = req.body;
 
@@ -236,21 +263,20 @@ router.post('/announcements', (req, res) => {
       VALUES (?, ?, ?, ?, ?)
     `).run(annObj.id, annObj.title, annObj.message, annObj.category, annObj.is_banner);
 
-    if (supabaseService.syncAnnouncement) {
-      supabaseService.syncAnnouncement(annObj).catch(() => {});
-    }
+    await supabaseService.syncAnnouncement(annObj);
 
-    res.status(201).json({ success: true, message: 'Announcement published', announcement: annObj });
+    res.status(201).json({ success: true, message: 'Announcement published and synced to Supabase', announcement: annObj });
   } catch (error) {
     res.status(500).json({ success: false, error: 'Failed to create announcement' });
   }
 });
 
 // DELETE /api/admin/announcements/:id
-router.delete('/announcements/:id', (req, res) => {
+router.delete('/announcements/:id', async (req, res) => {
   try {
     db.prepare('DELETE FROM announcements WHERE id = ?').run(req.params.id);
-    res.json({ success: true, message: 'Announcement removed' });
+    await supabaseService.deleteAnnouncement(req.params.id);
+    res.json({ success: true, message: 'Announcement removed from database and Supabase' });
   } catch (error) {
     res.status(500).json({ success: false, error: 'Failed to delete announcement' });
   }

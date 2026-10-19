@@ -3,6 +3,7 @@ const router = express.Router();
 const NodeCache = require('node-cache');
 const { db } = require('../database');
 const { authenticateToken, authorizeRoles } = require('../middleware/auth');
+const supabaseService = require('../services/supabaseService');
 
 // 60-second in-memory cache for high concurrency handling (3000+ users)
 const psCache = new NodeCache({ stdTTL: 60, checkperiod: 120 });
@@ -103,7 +104,7 @@ router.get('/:id', (req, res) => {
 });
 
 // POST /api/problems (Create new problem statement from Admin Panel)
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const { id, title, category, domain_bucket, organization, description, desired_outcome, complexity, dataset_url } = req.body;
 
@@ -111,27 +112,44 @@ router.post('/', (req, res) => {
       return res.status(400).json({ success: false, error: 'Missing required problem statement fields' });
     }
 
+    const psObj = {
+      id,
+      title,
+      category,
+      domain_bucket: domain_bucket || 'Software',
+      organization,
+      description,
+      desired_outcome: desired_outcome || '',
+      complexity: complexity || 'Medium',
+      dataset_url: dataset_url || '',
+      submissions_count: 0,
+      is_active: 1
+    };
+
     const insertStmt = db.prepare(`
       INSERT OR REPLACE INTO problem_statements (id, title, category, domain_bucket, organization, description, desired_outcome, complexity, dataset_url, is_active)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
     `);
 
-    insertStmt.run(id, title, category, domain_bucket || 'Software', organization, description, desired_outcome || '', complexity || 'Medium', dataset_url || '');
+    insertStmt.run(psObj.id, psObj.title, psObj.category, psObj.domain_bucket, psObj.organization, psObj.description, psObj.desired_outcome, psObj.complexity, psObj.dataset_url);
 
     psCache.flushAll(); // Invalidate cache
 
-    res.status(201).json({ success: true, message: 'Problem statement created successfully', id });
+    await supabaseService.syncProblemStatement(psObj);
+
+    res.status(201).json({ success: true, message: 'Problem statement created and synced to Supabase', id, problem: psObj });
   } catch (error) {
     res.status(500).json({ success: false, error: 'Error creating problem statement: ' + error.message });
   }
 });
 
 // DELETE /api/problems/:id (Remove problem statement from Admin Panel)
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
     db.prepare('DELETE FROM problem_statements WHERE id = ?').run(req.params.id);
     psCache.flushAll();
-    res.json({ success: true, message: 'Problem statement deleted', id: req.params.id });
+    await supabaseService.deleteProblemStatement(req.params.id);
+    res.json({ success: true, message: 'Problem statement deleted from database and Supabase', id: req.params.id });
   } catch (error) {
     res.status(500).json({ success: false, error: 'Failed to delete problem statement' });
   }
